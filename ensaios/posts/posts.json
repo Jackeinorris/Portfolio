@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Entre o instinto e o infinito: o estranhamento em Perfectly a Strangeness",
+    "slug": "entre-o-instinto-e-o-infinito-perfectly-a-strangeness",
+    "date": "2026-04-15",
+    "excerpt": "Em Perfectly a Strangeness, Alison McAlpine transforma o deserto em campo de tens\u00e3o entre mat\u00e9ria, percep\u00e7\u00e3o e imagina\u00e7\u00e3o c\u00f3smica.",
+    "coverImage": "../assets/images/perfectly-a-strangeness.jpeg",
+    "videoUrl": "",
+    "tags": ["cinema", "an\u00e1lise f\u00edlmica", "ensaio"],
+    "draft": false
+  },
+  {
+    "title": "Sobre construir imagens que ficam",
+    "slug": "sobre-construir-imagens",
+    "date": "2026-04-15",
+    "excerpt": "A diferen\u00e7a entre uma imagem que funciona e uma que permanece n\u00e3o \u00e9 t\u00e9cnica \u2014 \u00e9 inten\u00e7\u00e3o.",
+    "coverImage": "",
+    "videoUrl": "",
+    "tags": ["cinema", "processo"],
+    "draft": true
+  }
+]

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ensaios — J. V. Dias</title>
+  <meta name="description" content="Ensaios semanais sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.">
+  <meta name="theme-color" content="#0a0a0a">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jvdiasfilms.com.br/ensaios/">
+  <meta property="og:title" content="Ensaios — J. V. Dias">
+  <meta property="og:description" content="Ensaios semanais sobre cinema, direção visual, 3D e processo criativo.">
+  <meta property="og:image" content="https://jvdiasfilms.com.br/assets/images/12_532.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400&family=Inter:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a href="../index.html" class="logo visible">J. V. Dias</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#works">Projetos</a></li>
+        <li><a href="../ensaios/">Ensaios</a></li>
+        <li><a href="../about.html">Sobre</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="ensaios-page">
+
+    <h1 class="ensaios-title">Ensaios</h1>
+    <p class="ensaios-subtitle">Textos semanais sobre imagem, processo e construção visual.</p>
+
+    <div class="ensaio-list" id="ensaio-list">
+      <p class="ensaio-empty">Carregando...</p>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-name">J. V. Dias</span>
+      <div class="footer-links">
+        <a href="mailto:joaodias@jvdias.com">joaodias@jvdias.com</a>
+        <span class="footer-sep">·</span>
+        <a href="https://www.linkedin.com/in/JvDiasM" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <span class="footer-sep">·</span>
+        <a href="../about.html">Sobre</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (async function () {
+      const list = document.getElementById("ensaio-list");
+
+      try {
+        const res = await fetch("posts/posts.json");
+        const posts = await res.json();
+
+        const published = posts
+          .filter((p) => !p.draft)
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (published.length === 0) {
+          list.innerHTML = '<p class="ensaio-empty">Nenhum ensaio publicado ainda.</p>';
+          return;
+        }
+
+        list.innerHTML = published
+          .map((post) => {
+            const d = new Date(post.date + "T12:00:00");
+            const dateStr = d.toLocaleDateString("pt-BR", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            });
+
+            const tags = post.tags
+              ? post.tags.map((t) => `<span class="ensaio-tag">${t}</span>`).join("")
+              : "";
+
+            const videoIndicator = post.videoUrl
+              ? '<span class="ensaio-video-badge">&#9654; Video</span>'
+              : "";
+
+            return `
+              <a href="post.html?slug=${post.slug}" class="ensaio-entry">
+                ${post.coverImage ? `<div class="ensaio-cover"><img src="${post.coverImage}" alt=""></div>` : ""}
+                <div class="ensaio-entry-content">
+                  <time class="ensaio-date">${dateStr}</time>
+                  <h2 class="ensaio-entry-title">${post.title}</h2>
+                  <p class="ensaio-excerpt">${post.excerpt}</p>
+                  <div class="ensaio-meta">
+                    ${tags}
+                    ${videoIndicator}
+                  </div>
+                </div>
+              </a>
+            `;
+          })
+          .join("");
+      } catch (e) {
+        list.innerHTML = '<p class="ensaio-empty">Erro ao carregar ensaios.</p>';
+      }
+    })();
+  </script>
+
+</body>
+</html>
