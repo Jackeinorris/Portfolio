@@ -5,6 +5,18 @@
     "date": "2026-04-15",
     "excerpt": "Em Perfectly a Strangeness, Alison McAlpine transforma o deserto em campo de tens\u00e3o entre mat\u00e9ria, percep\u00e7\u00e3o e imagina\u00e7\u00e3o c\u00f3smica.",
     "coverImage": "../assets/images/perfectly-a-strangeness.jpeg",
+    "coverPosition": "center",
+    "videoUrl": "",
+    "tags": ["cinema", "an\u00e1lise f\u00edlmica", "ensaio"],
+    "draft": false
+  },
+  {
+    "title": "Taste: pintura, repeti\u00e7\u00e3o e presen\u00e7a",
+    "slug": "taste-pintura-repeticao-e-presenca",
+    "date": "2026-03-11",
+    "excerpt": "Em Taste, L\u00ea B\u1ea3o organiza a experi\u00eancia menos pela progress\u00e3o narrativa do que pela observa\u00e7\u00e3o dos corpos, do espa\u00e7o e da repeti\u00e7\u00e3o.",
+    "coverImage": "../assets/images/Taste.jpg",
+    "coverPosition": "center 1%",
     "videoUrl": "",
     "tags": ["cinema", "an\u00e1lise f\u00edlmica", "ensaio"],
     "draft": false

@@ -111,8 +111,9 @@
 
         // Cover image (optional)
         if (post.coverImage) {
+          const pos = post.coverPosition || "center";
           document.getElementById("ensaio-cover-hero").innerHTML =
-            `<img src="${post.coverImage}" alt="${post.title}">`;
+            `<img src="${post.coverImage}" alt="${post.title}" style="object-position: ${pos};">`;
         }
 
         // Fetch markdown content

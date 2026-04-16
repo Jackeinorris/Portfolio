@@ -39,7 +39,37 @@
     <p class="ensaios-subtitle">Textos semanais sobre imagem, processo e construção visual.</p>
 
     <div class="ensaio-list" id="ensaio-list">
-      <p class="ensaio-empty">Carregando...</p>
+
+      <!-- ENSAIO: entre-o-instinto-e-o-infinito-perfectly-a-strangeness -->
+      <a href="post.html?slug=entre-o-instinto-e-o-infinito-perfectly-a-strangeness" class="ensaio-entry">
+        <div class="ensaio-cover"><img src="../assets/images/perfectly-a-strangeness.jpeg" alt=""></div>
+        <div class="ensaio-entry-content">
+          <time class="ensaio-date">15 de abril de 2026</time>
+          <h2 class="ensaio-entry-title">Entre o instinto e o infinito: o estranhamento em Perfectly a Strangeness</h2>
+          <p class="ensaio-excerpt">Em Perfectly a Strangeness, Alison McAlpine transforma o deserto em campo de tensão entre matéria, percepção e imaginação cósmica.</p>
+          <div class="ensaio-meta">
+            <span class="ensaio-tag">cinema</span>
+            <span class="ensaio-tag">análise fílmica</span>
+            <span class="ensaio-tag">ensaio</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ENSAIO: taste-pintura-repeticao-e-presenca -->
+      <a href="post.html?slug=taste-pintura-repeticao-e-presenca" class="ensaio-entry">
+        <div class="ensaio-cover"><img src="../assets/images/Taste.jpg" alt="" style="object-position: center 1%;"></div>
+        <div class="ensaio-entry-content">
+          <time class="ensaio-date">11 de março de 2026</time>
+          <h2 class="ensaio-entry-title">Taste: pintura, repetição e presença</h2>
+          <p class="ensaio-excerpt">Em Taste, Lê Bảo organiza a experiência menos pela progressão narrativa do que pela observação dos corpos, do espaço e da repetição.</p>
+          <div class="ensaio-meta">
+            <span class="ensaio-tag">cinema</span>
+            <span class="ensaio-tag">análise fílmica</span>
+            <span class="ensaio-tag">ensaio</span>
+          </div>
+        </div>
+      </a>
+
     </div>
 
   </main>
@@ -56,62 +86,6 @@
       </div>
     </div>
   </footer>
-
-  <script>
-    (async function () {
-      const list = document.getElementById("ensaio-list");
-
-      try {
-        const res = await fetch("posts/posts.json");
-        const posts = await res.json();
-
-        const published = posts
-          .filter((p) => !p.draft)
-          .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        if (published.length === 0) {
-          list.innerHTML = '<p class="ensaio-empty">Nenhum ensaio publicado ainda.</p>';
-          return;
-        }
-
-        list.innerHTML = published
-          .map((post) => {
-            const d = new Date(post.date + "T12:00:00");
-            const dateStr = d.toLocaleDateString("pt-BR", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            });
-
-            const tags = post.tags
-              ? post.tags.map((t) => `<span class="ensaio-tag">${t}</span>`).join("")
-              : "";
-
-            const videoIndicator = post.videoUrl
-              ? '<span class="ensaio-video-badge">&#9654; Video</span>'
-              : "";
-
-            return `
-              <a href="post.html?slug=${post.slug}" class="ensaio-entry">
-                ${post.coverImage ? `<div class="ensaio-cover"><img src="${post.coverImage}" alt=""></div>` : ""}
-                <div class="ensaio-entry-content">
-                  <time class="ensaio-date">${dateStr}</time>
-                  <h2 class="ensaio-entry-title">${post.title}</h2>
-                  <p class="ensaio-excerpt">${post.excerpt}</p>
-                  <div class="ensaio-meta">
-                    ${tags}
-                    ${videoIndicator}
-                  </div>
-                </div>
-              </a>
-            `;
-          })
-          .join("");
-      } catch (e) {
-        list.innerHTML = '<p class="ensaio-empty">Erro ao carregar ensaios.</p>';
-      }
-    })();
-  </script>
 
 </body>
 </html>
