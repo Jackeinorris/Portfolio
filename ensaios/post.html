@@ -47,6 +47,8 @@
         <p class="ensaio-empty">Carregando...</p>
       </div>
 
+      <div class="ensaio-signature" id="ensaio-signature"></div>
+
       <div class="ensaio-tags" id="ensaio-tags"></div>
 
     </article>
@@ -145,6 +147,18 @@
 
         // Render markdown
         document.getElementById("ensaio-body").innerHTML = marked.parse(md);
+
+        // Signature (author sign-off after body)
+        const signatureDate = d.toLocaleDateString("pt-BR", {
+          month: "long",
+          year: "numeric",
+        });
+        const signatureLocation = post.location || "São Paulo";
+        document.getElementById("ensaio-signature").innerHTML = `
+          <div class="ensaio-signature-rule" aria-hidden="true">· · ·</div>
+          <div class="ensaio-signature-author">— J. V. Dias</div>
+          <div class="ensaio-signature-place">${signatureLocation}, ${signatureDate}</div>
+        `;
 
         // Tags
         if (post.tags && post.tags.length) {
