@@ -37,6 +37,13 @@ h1, h2, h3 {
   letter-spacing: 0.01em;
 }
 
+h1, h2, h3,
+.about-entry-year,
+.ensaio-date,
+.project-credit {
+  font-feature-settings: "kern", "liga", "onum";
+}
+
 /* --- Header / nav --- */
 .site-header {
   position: fixed;
@@ -609,7 +616,6 @@ h1, h2, h3 {
 .project-description p {
   line-height: 1.8;
   margin-bottom: 1rem;
-  text-align: justify;
 }
 
 .project-description p:last-child {
@@ -651,18 +657,18 @@ h1, h2, h3 {
 }
 
 .about-hero {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-  margin-bottom: 5rem;
+  display: grid;
+  grid-template-columns: minmax(240px, 340px) 1fr;
+  gap: 4rem;
+  align-items: end;
+  margin-bottom: 6rem;
 }
 
 .about-photo {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 0;
   overflow: hidden;
-  flex-shrink: 0;
   background: #141414;
 }
 
@@ -670,6 +676,7 @@ h1, h2, h3 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: brightness(1.02) contrast(1.02);
 }
 
 .about-page-title {
@@ -696,9 +703,8 @@ h1, h2, h3 {
 }
 
 .about-section p {
-  line-height: 1.85;
+  line-height: 1.7;
   opacity: 0.82;
-  text-align: justify;
   max-width: 65ch;
 }
 
@@ -712,14 +718,14 @@ h1, h2, h3 {
   margin-bottom: 1.5rem;
 }
 
-.about-positioning .about-statement {
+.about-statement {
   font-family: "Fraunces", Georgia, serif;
-  font-size: 1.4rem;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
   font-weight: 300;
-  line-height: 1.4;
-  opacity: 0.9;
-  text-align: left;
-  margin-bottom: 1.8rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  opacity: 0.95;
+  margin-top: 2rem;
 }
 
 .about-positioning p + p {
@@ -781,7 +787,6 @@ h1, h2, h3 {
   font-size: 0.95rem;
   line-height: 1.8;
   opacity: 0.72;
-  text-align: justify;
   max-width: 65ch;
   margin-bottom: 0.8rem;
 }
@@ -841,6 +846,27 @@ h1, h2, h3 {
   max-width: 750px;
   margin: 0 auto;
   padding: 8rem 2rem 4rem;
+}
+
+.ensaios-masthead {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(234, 230, 223, 0.12);
+  margin-bottom: 5rem;
+}
+
+.ensaios-dateline {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.ensaios-masthead .ensaios-subtitle {
+  margin-bottom: 0;
 }
 
 .ensaios-title {
@@ -907,7 +933,7 @@ h1, h2, h3 {
   font-family: "Libre Baskerville", Baskerville, Georgia, serif;
   font-size: 0.92rem;
   line-height: 1.7;
-  opacity: 0.6;
+  opacity: 0.7;
   max-width: 55ch;
 }
 
@@ -920,11 +946,26 @@ h1, h2, h3 {
 
 .ensaio-tag {
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.3;
+  opacity: 0.55;
+  color: #eae6df;
+}
+
+.ensaio-meta .ensaio-tag + .ensaio-tag,
+.ensaio-tags .ensaio-tag + .ensaio-tag {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.ensaio-meta .ensaio-tag + .ensaio-tag::before,
+.ensaio-tags .ensaio-tag + .ensaio-tag::before {
+  content: "·";
+  position: absolute;
+  left: 0.25rem;
+  opacity: 0.4;
 }
 
 .ensaio-video-badge {
@@ -1061,7 +1102,7 @@ h1, h2, h3 {
 .ensaio-body p {
   font-family: "Libre Baskerville", Baskerville, Georgia, serif;
   font-size: 0.95rem;
-  line-height: 1.95;
+  line-height: 1.8;
   opacity: 0.8;
   margin-bottom: 1.25rem;
 }
@@ -1166,6 +1207,48 @@ h1, h2, h3 {
   font-size: 1rem;
   font-weight: 300;
   opacity: 0.75;
+}
+
+/* --- Tablet / small laptop --- */
+@media (max-width: 1024px) {
+
+  .works {
+    padding: 5rem 1.5rem 6rem;
+  }
+
+  .works-grid {
+    gap: 2.5rem 1.5rem;
+  }
+
+  .archive {
+    padding: 1.5rem 1.5rem 5rem;
+  }
+
+  .archive-grid {
+    max-width: 100%;
+    gap: 1.75rem 1.5rem;
+  }
+
+  .about-page,
+  .ensaios-page,
+  .ensaio-page,
+  .project-page {
+    padding: 7rem 1.75rem 3.5rem;
+  }
+
+  .about-hero {
+    gap: 2.5rem;
+    grid-template-columns: minmax(200px, 280px) 1fr;
+  }
+
+  .about-skills {
+    gap: 1.5rem;
+  }
+
+  .section-title {
+    margin-bottom: 3rem;
+  }
+
 }
 
 /* --- Mobile --- */
@@ -1284,15 +1367,16 @@ h1, h2, h3 {
   }
 
   .about-hero {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     text-align: center;
     gap: 2rem;
     margin-bottom: 3.5rem;
   }
 
   .about-photo {
-    width: 160px;
-    height: 160px;
+    width: 180px;
+    max-width: 100%;
+    justify-self: center;
   }
 
   .about-page-title {
