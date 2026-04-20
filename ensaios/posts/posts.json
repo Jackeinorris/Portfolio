@@ -1,5 +1,16 @@
 [
   {
+    "title": "The Drama: Entre romance, desconforto e colapso",
+    "slug": "the-drama-entre-romance-desconforto-e-colapso",
+    "date": "2026-04-19",
+    "excerpt": "Em The Drama, Kristoffer Borgli transforma uma crise afetiva em comédia incômoda, mas a ambição tonal do filme nem sempre encontra unidade entre romance, tensão e colapso emocional.",
+    "coverImage": "../assets/images/The_Drama.jpg",
+    "coverPosition": "center 20%",
+    "videoUrl": "",
+    "tags": ["cinema", "crítica", "ensaio"],
+    "draft": false
+  },
+  {
     "title": "Manhã Cinzenta: alegoria, repressão e forma",
     "slug": "manha-cinzenta-alegoria-repressao-e-forma",
     "date": "2026-04-13",
