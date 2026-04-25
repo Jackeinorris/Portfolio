@@ -518,6 +518,67 @@ h1, h2, h3,
   font-size: 0.8rem;
 }
 
+/* --- 404 page --- */
+.not-found-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8rem 2rem 4rem;
+  text-align: center;
+}
+
+.not-found-kicker {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 1.5rem;
+}
+
+.not-found-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2.2rem, 6vw, 4.4rem);
+  font-weight: 300;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+}
+
+.not-found-text {
+  max-width: 48ch;
+  margin: 0 auto 2.5rem;
+  opacity: 0.72;
+  line-height: 1.75;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.4rem;
+}
+
+.not-found-actions a {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(234, 230, 223, 0.3);
+  padding-bottom: 3px;
+  opacity: 0.72;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.not-found-actions a:hover {
+  opacity: 1;
+  border-color: #eae6df;
+}
+
 /* --- Project page --- */
 .project-page {
   max-width: 1000px;
