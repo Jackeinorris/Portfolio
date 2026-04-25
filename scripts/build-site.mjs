@@ -6,6 +6,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE_URL = "https://jvdiasfilms.com.br";
 const POSTS_DIR = path.join(ROOT, "ensaios", "posts");
 const ENSAIOS_DIR = path.join(ROOT, "ensaios");
+const PERSON_ID = `${SITE_URL}/#person`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
+const DEFAULT_IMAGE = `${SITE_URL}/assets/images/optimized/og-jvdias.jpg`;
+const PROFILE_IMAGE = `${SITE_URL}/assets/images/foto-perfil.jpeg`;
 
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const write = (file, text) => fs.writeFileSync(path.join(ROOT, file), text, "utf8");
@@ -129,6 +133,115 @@ function absoluteUrl(url) {
   return `${SITE_URL}/${url.replace(/^\.\.\//, "").replace(/^\.\//, "")}`;
 }
 
+function safeJsonLd(value) {
+  return JSON.stringify(value, null, 2).replace(/</g, "\\u003c");
+}
+
+function structuredDataScript(graph) {
+  return `<script type="application/ld+json" id="structured-data">\n${safeJsonLd({ "@context": "https://schema.org", "@graph": graph })}\n  </script>`;
+}
+
+function personNode() {
+  return {
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: "J. V. Dias",
+    url: `${SITE_URL}/`,
+    image: PROFILE_IMAGE,
+    jobTitle: "Diretor visual, filmmaker e artista 3D",
+    email: "mailto:joaodias@jvdias.com",
+    sameAs: ["https://www.linkedin.com/in/JvDiasM"],
+    knowsAbout: ["cinema", "direção visual", "3D", "direção de fotografia", "produção audiovisual", "pipeline de render"],
+  };
+}
+
+function websiteNode() {
+  return {
+    "@type": "WebSite",
+    "@id": WEBSITE_ID,
+    url: `${SITE_URL}/`,
+    name: "J. V. Dias",
+    inLanguage: "pt-BR",
+    publisher: { "@id": PERSON_ID },
+  };
+}
+
+function essayIndexStructuredData(posts) {
+  const url = `${SITE_URL}/ensaios/`;
+  return [
+    personNode(),
+    websiteNode(),
+    {
+      "@type": "CollectionPage",
+      "@id": `${url}#webpage`,
+      url,
+      name: "Ensaios — J. V. Dias",
+      description: "Ensaios semanais sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.",
+      inLanguage: "pt-BR",
+      isPartOf: { "@id": WEBSITE_ID },
+      about: { "@id": PERSON_ID },
+      mainEntity: { "@id": `${url}#blog` },
+    },
+    {
+      "@type": "Blog",
+      "@id": `${url}#blog`,
+      url,
+      name: "Ensaios",
+      inLanguage: "pt-BR",
+      author: { "@id": PERSON_ID },
+      blogPost: posts.map((post) => ({ "@id": `${SITE_URL}/ensaios/${post.slug}.html#article` })),
+    },
+    {
+      "@type": "ItemList",
+      "@id": `${url}#posts`,
+      itemListElement: posts.map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${SITE_URL}/ensaios/${post.slug}.html`,
+        name: post.title,
+      })),
+    },
+  ];
+}
+
+function essayPostStructuredData(post, md, readTime) {
+  const url = `${SITE_URL}/ensaios/${post.slug}.html`;
+  const image = absoluteUrl(post.coverImage || "../assets/images/optimized/og-jvdias.jpg");
+  const wordCount = md.trim().split(/\s+/).filter(Boolean).length;
+  return [
+    personNode(),
+    websiteNode(),
+    {
+      "@type": "WebPage",
+      "@id": `${url}#webpage`,
+      url,
+      name: `${post.title} — J. V. Dias`,
+      description: post.excerpt,
+      inLanguage: "pt-BR",
+      isPartOf: { "@id": WEBSITE_ID },
+      about: { "@id": PERSON_ID },
+      primaryImageOfPage: image,
+      mainEntity: { "@id": `${url}#article` },
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": `${url}#article`,
+      mainEntityOfPage: { "@id": `${url}#webpage` },
+      headline: post.title,
+      description: post.excerpt,
+      image,
+      datePublished: post.date,
+      dateModified: post.date,
+      author: { "@id": PERSON_ID },
+      publisher: { "@id": PERSON_ID },
+      inLanguage: "pt-BR",
+      keywords: post.tags || [],
+      timeRequired: `PT${readTime}M`,
+      wordCount,
+    },
+  ];
+}
+
 function webpCandidate(imagePath) {
   if (!imagePath) return "";
   const webp = imagePath.replace(/\.(jpg|jpeg|png)$/i, ".webp");
@@ -211,6 +324,7 @@ function renderEssayIndex(posts) {
   <meta property="og:description" content="Ensaios semanais sobre cinema, direção visual, 3D e processo criativo.">
   <meta property="og:image" content="${SITE_URL}/assets/images/optimized/og-jvdias.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  ${structuredDataScript(essayIndexStructuredData(posts))}
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -285,6 +399,7 @@ function renderStaticPost(post, index, published, md) {
   <meta property="og:image" content="${absoluteUrl(post.coverImage || "../assets/images/optimized/og-jvdias.jpg")}">
   <meta property="article:published_time" content="${post.date}">
   <meta name="twitter:card" content="summary_large_image">
+  ${structuredDataScript(essayPostStructuredData(post, md, readTime))}
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
