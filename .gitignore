@@ -7,3 +7,10 @@ assets/images/Carrossel Taste.html
 assets/images/carousel.jsx
 assets/images/design-canvas.jsx
 assets/images/export.html
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
