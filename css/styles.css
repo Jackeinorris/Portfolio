@@ -126,6 +126,16 @@ h1, h2, h3,
   inset: 0;
 }
 
+.hero-image picture,
+.work-media picture,
+.archive-media picture,
+.project-hero picture,
+.ensaio-cover picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .hero-image img {
   width: 100%;
   height: 100%;

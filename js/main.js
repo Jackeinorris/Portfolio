@@ -18,6 +18,8 @@ function loadVimeo(el) {
   const iframe = document.createElement("iframe");
   iframe.src = `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0`;
   iframe.allow = "autoplay; fullscreen; picture-in-picture";
+  iframe.title = `Vídeo: ${el.dataset.title || el.querySelector("img")?.alt || "player Vimeo"}`;
+  iframe.loading = "lazy";
   iframe.frameBorder = "0";
   el.innerHTML = "";
   el.appendChild(iframe);

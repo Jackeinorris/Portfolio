@@ -1,3 +1,9 @@
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Local carousel/export scratch files
+assets/images/Carrossel Taste.html
+assets/images/carousel.jsx
+assets/images/design-canvas.jsx
+assets/images/export.html
