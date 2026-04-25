@@ -113,6 +113,13 @@ h1, h2, h3,
   opacity: 1;
 }
 
+/* --- Focus states --- */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid rgba(234, 230, 223, 0.9);
+  outline-offset: 4px;
+}
+
 /* --- Hero --- */
 .hero {
   position: relative;
@@ -300,7 +307,7 @@ h1, h2, h3,
   border: none;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: background 0.3s ease, opacity 0.3s ease;
 }
 
 .play-btn svg {
@@ -310,8 +317,28 @@ h1, h2, h3,
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
 }
 
-.work-media:hover .play-btn {
+.work-media:hover .play-btn,
+.archive-media:hover .play-btn,
+.project-hero:hover .play-btn,
+.play-btn:focus-visible {
   opacity: 1;
+}
+
+.play-btn:focus-visible {
+  background: rgba(0, 0, 0, 0.38);
+  outline-offset: -8px;
+}
+
+@media (hover: none) {
+  .play-btn {
+    background: rgba(0, 0, 0, 0.18);
+    opacity: 1;
+  }
+
+  .play-btn svg {
+    width: 42px;
+    height: 42px;
+  }
 }
 
 .work-caption h3 {
@@ -1313,6 +1340,22 @@ h1, h2, h3,
   font-size: 1rem;
   font-weight: 300;
   opacity: 0.75;
+}
+
+/* --- Motion preferences --- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* --- Tablet / small laptop --- */

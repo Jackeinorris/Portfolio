@@ -34,7 +34,8 @@ document.querySelectorAll(".work-lazy").forEach((el) => {
 function playProjectVideo() {
   const hero = document.querySelector(".project-hero");
   if (!hero) return;
-  hero.scrollIntoView({ behavior: "smooth" });
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  hero.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
   if (hero.classList.contains("work-lazy")) {
     loadVimeo(hero);
   }
