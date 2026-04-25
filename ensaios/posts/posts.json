@@ -4,10 +4,14 @@
     "slug": "the-drama-entre-romance-desconforto-e-colapso",
     "date": "2026-04-19",
     "excerpt": "Em The Drama, Kristoffer Borgli transforma uma crise afetiva em comédia incômoda, mas a ambição tonal do filme nem sempre encontra unidade entre romance, tensão e colapso emocional.",
-    "coverImage": "../assets/images/The_Drama.jpg",
+    "coverImage": "../assets/images/optimized/the-drama-thumb.jpg",
     "coverPosition": "center 20%",
     "videoUrl": "",
-    "tags": ["cinema", "crítica", "ensaio"],
+    "tags": [
+      "cinema",
+      "crítica",
+      "ensaio"
+    ],
     "draft": false
   },
   {
@@ -15,9 +19,13 @@
     "slug": "manha-cinzenta-alegoria-repressao-e-forma",
     "date": "2026-04-13",
     "excerpt": "Em Manhã Cinzenta, Olney São Paulo transforma a repressão política em linguagem cinematográfica. O curta articula alegoria, fragmentação e urgência formal para fazer o espectador sentir o sufocamento de viver sob a ditadura.",
-    "coverImage": "../assets/images/manha_cinzenta_foto.jpg",
+    "coverImage": "../assets/images/optimized/manha-cinzenta-thumb.jpg",
     "videoUrl": "",
-    "tags": ["cinema", "análise fílmica", "ensaio"],
+    "tags": [
+      "cinema",
+      "análise fílmica",
+      "ensaio"
+    ],
     "draft": false
   },
   {
@@ -25,10 +33,14 @@
     "slug": "entre-o-instinto-e-o-infinito-perfectly-a-strangeness",
     "date": "2026-04-06",
     "excerpt": "Em Perfectly a Strangeness, Alison McAlpine transforma o deserto em campo de tensão entre matéria, percepção e imaginação cósmica.",
-    "coverImage": "../assets/images/perfectly-a-strangeness.jpeg",
+    "coverImage": "../assets/images/optimized/perfectly-thumb.jpg",
     "coverPosition": "center",
     "videoUrl": "",
-    "tags": ["cinema", "análise fílmica", "ensaio"],
+    "tags": [
+      "cinema",
+      "análise fílmica",
+      "ensaio"
+    ],
     "draft": false
   },
   {
@@ -36,10 +48,14 @@
     "slug": "taste-pintura-repeticao-e-presenca",
     "date": "2026-03-30",
     "excerpt": "Em Taste, Lê Bảo organiza a experiência menos pela progressão narrativa do que pela observação dos corpos, do espaço e da repetição.",
-    "coverImage": "../assets/images/Taste.jpg",
+    "coverImage": "../assets/images/optimized/taste-thumb.jpg",
     "coverPosition": "center 1%",
     "videoUrl": "",
-    "tags": ["cinema", "análise fílmica", "ensaio"],
+    "tags": [
+      "cinema",
+      "análise fílmica",
+      "ensaio"
+    ],
     "draft": false
   },
   {
@@ -49,7 +65,10 @@
     "excerpt": "A diferença entre uma imagem que funciona e uma que permanece não é técnica — é intenção.",
     "coverImage": "",
     "videoUrl": "",
-    "tags": ["cinema", "processo"],
+    "tags": [
+      "cinema",
+      "processo"
+    ],
     "draft": true
   }
 ]

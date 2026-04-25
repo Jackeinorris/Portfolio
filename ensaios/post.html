@@ -4,7 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ensaio — J. V. Dias</title>
+  <meta name="description" content="Ensaio de J. V. Dias sobre cinema, imagem e processo criativo.">
   <meta name="theme-color" content="#0a0a0a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://jvdiasfilms.com.br/ensaios/post.html">
+  <meta property="og:title" content="Ensaio — J. V. Dias">
+  <meta property="og:description" content="Ensaio de J. V. Dias sobre cinema, imagem e processo criativo.">
+  <meta property="og:image" content="https://jvdiasfilms.com.br/assets/images/optimized/og-jvdias.jpg">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,7 +80,47 @@
   <script>
     (async function () {
       const slug = new URLSearchParams(window.location.search).get("slug");
-      if (!slug) {
+      const allowedSlug = /^[a-z0-9-]+$/;
+      const siteOrigin = "https://jvdiasfilms.com.br";
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function safePosition(value) {
+        return /^[\w\s.%()-]+$/.test(value || "") ? value : "center";
+      }
+
+      function sanitizeHtml(html) {
+        const template = document.createElement("template");
+        template.innerHTML = html;
+        template.content
+          .querySelectorAll("script, style, iframe, object, embed, link, meta, base, form, input, button, textarea, select")
+          .forEach((el) => el.remove());
+        template.content.querySelectorAll("*").forEach((el) => {
+          [...el.attributes].forEach((attr) => {
+            const name = attr.name.toLowerCase();
+            const value = attr.value.trim();
+            const isUrl = ["href", "src", "xlink:href"].includes(name);
+            if (name.startsWith("on") || name === "style" || (isUrl && /^javascript:/i.test(value))) {
+              el.removeAttribute(attr.name);
+            }
+          });
+        });
+        return template.innerHTML;
+      }
+
+      function setMeta(selector, value) {
+        const el = document.querySelector(selector);
+        if (el) el.setAttribute("content", value);
+      }
+
+      if (!slug || !allowedSlug.test(slug)) {
         window.location.href = "./";
         return;
       }
@@ -91,16 +138,18 @@
 
         if (!post) {
           document.getElementById("ensaio-body").innerHTML =
-            '<p class="ensaio-empty">Ensaio nao encontrado.</p>';
+            '<p class="ensaio-empty">Ensaio não encontrado.</p>';
           return;
         }
 
-        // Title & meta
         document.title = `${post.title} — J. V. Dias`;
-
-        // OG tags
-        const ogTitle = document.querySelector('meta[property="og:title"]');
-        if (ogTitle) ogTitle.content = post.title;
+        setMeta('meta[name="description"]', post.excerpt || "");
+        setMeta('meta[property="og:title"]', `${post.title} — J. V. Dias`);
+        setMeta('meta[property="og:description"]', post.excerpt || "");
+        setMeta('meta[property="og:url"]', `${siteOrigin}/ensaios/${post.slug}.html`);
+        if (post.coverImage) {
+          setMeta('meta[property="og:image"]', `${siteOrigin}/${post.coverImage.replace(/^\.\.\//, "")}`);
+        }
 
         const d = new Date(post.date + "T12:00:00");
         const dateStr = d.toLocaleDateString("pt-BR", {
@@ -111,25 +160,23 @@
 
         document.getElementById("ensaio-title").textContent = post.title;
 
-        // Cover image (optional)
         if (post.coverImage) {
-          const pos = post.coverPosition || "center";
-          document.getElementById("ensaio-cover-hero").innerHTML =
-            `<img src="${post.coverImage}" alt="${post.title}" style="object-position: ${pos};">`;
+          const img = document.createElement("img");
+          img.src = post.coverImage;
+          img.alt = post.title;
+          img.decoding = "async";
+          img.style.objectPosition = safePosition(post.coverPosition || "center");
+          document.getElementById("ensaio-cover-hero").appendChild(img);
         }
 
-        // Fetch markdown content
         const mdRes = await fetch(`posts/${slug}.md`);
         const md = await mdRes.text();
-
-        // Reading time
-        const words = md.split(/\s+/).length;
+        const words = md.trim().split(/\s+/).length;
         const readTime = Math.max(1, Math.round(words / 200));
 
         document.getElementById("ensaio-info").innerHTML =
-          `<time>${dateStr}</time><span class="ensaio-info-sep">·</span><span>${readTime} min de leitura</span>`;
+          `<time datetime="${post.date}">${dateStr}</time><span class="ensaio-info-sep">·</span><span>${readTime} min de leitura</span>`;
 
-        // Video (optional)
         if (post.videoUrl) {
           const videoId = post.videoUrl.match(/vimeo\.com\/(\d+)/)?.[1];
           if (videoId) {
@@ -138,6 +185,7 @@
                 <iframe
                   src="https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0"
                   allow="autoplay; fullscreen; picture-in-picture"
+                  title="Vídeo: ${escapeHtml(post.title)}"
                   frameborder="0">
                 </iframe>
               </div>
@@ -145,10 +193,8 @@
           }
         }
 
-        // Render markdown
-        document.getElementById("ensaio-body").innerHTML = marked.parse(md);
+        document.getElementById("ensaio-body").innerHTML = sanitizeHtml(marked.parse(md));
 
-        // Signature (author sign-off after body)
         const signatureDate = d.toLocaleDateString("pt-BR", {
           month: "long",
           year: "numeric",
@@ -157,25 +203,23 @@
         document.getElementById("ensaio-signature").innerHTML = `
           <div class="ensaio-signature-rule" aria-hidden="true">· · ·</div>
           <div class="ensaio-signature-author">— J. V. Dias</div>
-          <div class="ensaio-signature-place">${signatureLocation}, ${signatureDate}</div>
+          <div class="ensaio-signature-place">${escapeHtml(signatureLocation)}, ${signatureDate}</div>
         `;
 
-        // Tags
         if (post.tags && post.tags.length) {
           document.getElementById("ensaio-tags").innerHTML = post.tags
-            .map((t) => `<span class="ensaio-tag">${t}</span>`)
+            .map((t) => `<span class="ensaio-tag">${escapeHtml(t)}</span>`)
             .join("");
         }
 
-        // Prev / Next navigation
         const prev = published[index + 1];
         const next = published[index - 1];
         const navEl = document.getElementById("ensaio-nav");
 
         if (prev || next) {
           navEl.innerHTML = `
-            ${prev ? `<a href="post.html?slug=${prev.slug}" class="ensaio-nav-link ensaio-nav-prev"><span class="ensaio-nav-label">&larr; Anterior</span><span class="ensaio-nav-title">${prev.title}</span></a>` : '<span></span>'}
-            ${next ? `<a href="post.html?slug=${next.slug}" class="ensaio-nav-link ensaio-nav-next"><span class="ensaio-nav-label">Proximo &rarr;</span><span class="ensaio-nav-title">${next.title}</span></a>` : '<span></span>'}
+            ${prev ? `<a href="${prev.slug}.html" class="ensaio-nav-link ensaio-nav-prev"><span class="ensaio-nav-label">&larr; Anterior</span><span class="ensaio-nav-title">${escapeHtml(prev.title)}</span></a>` : '<span></span>'}
+            ${next ? `<a href="${next.slug}.html" class="ensaio-nav-link ensaio-nav-next"><span class="ensaio-nav-label">Próximo &rarr;</span><span class="ensaio-nav-title">${escapeHtml(next.title)}</span></a>` : '<span></span>'}
           `;
         }
       } catch (e) {
