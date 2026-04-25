@@ -1,0 +1,407 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const SITE_URL = "https://jvdiasfilms.com.br";
+const POSTS_DIR = path.join(ROOT, "ensaios", "posts");
+const ENSAIOS_DIR = path.join(ROOT, "ensaios");
+
+const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
+const write = (file, text) => fs.writeFileSync(path.join(ROOT, file), text, "utf8");
+const exists = (file) => fs.existsSync(path.join(ROOT, file));
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value);
+}
+
+function inlineMarkdown(value) {
+  let out = escapeHtml(value);
+  out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  out = out.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  return out;
+}
+
+function renderMarkdown(md) {
+  const lines = md.replace(/\r\n/g, "\n").split("\n");
+  const html = [];
+  let para = [];
+  let quote = [];
+  let list = null;
+
+  function flushPara() {
+    if (!para.length) return;
+    html.push(`<p>${inlineMarkdown(para.join(" "))}</p>`);
+    para = [];
+  }
+
+  function flushQuote() {
+    if (!quote.length) return;
+    html.push(`<blockquote><p>${inlineMarkdown(quote.join(" "))}</p></blockquote>`);
+    quote = [];
+  }
+
+  function flushList() {
+    if (!list) return;
+    html.push(`<${list.type}>${list.items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</${list.type}>`);
+    list = null;
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushPara();
+      flushQuote();
+      flushList();
+      continue;
+    }
+
+    const unordered = trimmed.match(/^[-*]\s+(.+)$/);
+    const ordered = trimmed.match(/^\d+\.\s+(.+)$/);
+    if (unordered || ordered) {
+      flushPara();
+      flushQuote();
+      const type = unordered ? "ul" : "ol";
+      if (list && list.type !== type) flushList();
+      if (!list) list = { type, items: [] };
+      list.items.push(unordered?.[1] || ordered?.[1]);
+      continue;
+    }
+
+    flushList();
+    if (trimmed.startsWith(">")) {
+      flushPara();
+      quote.push(trimmed.replace(/^>\s?/, ""));
+      continue;
+    }
+
+    flushQuote();
+    if (trimmed === "---") {
+      flushPara();
+      html.push("<hr>");
+    } else if (trimmed.startsWith("### ")) {
+      flushPara();
+      html.push(`<h3>${inlineMarkdown(trimmed.slice(4))}</h3>`);
+    } else if (trimmed.startsWith("## ")) {
+      flushPara();
+      html.push(`<h2>${inlineMarkdown(trimmed.slice(3))}</h2>`);
+    } else {
+      para.push(trimmed);
+    }
+  }
+
+  flushPara();
+  flushQuote();
+  flushList();
+  return html.join("\n");
+}
+
+function formatDate(date) {
+  return new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function formatMonth(date) {
+  return new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", {
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function readingTime(md) {
+  const words = md.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
+function absoluteUrl(url) {
+  return `${SITE_URL}/${url.replace(/^\.\.\//, "").replace(/^\.\//, "")}`;
+}
+
+function webpCandidate(imagePath) {
+  if (!imagePath) return "";
+  const webp = imagePath.replace(/\.(jpg|jpeg|png)$/i, ".webp");
+  const local = path.join(ENSAIOS_DIR, webp);
+  return fs.existsSync(local) ? webp : "";
+}
+
+function pictureMarkup(imagePath, alt, attrs = "") {
+  if (!imagePath) return "";
+  const webp = webpCandidate(imagePath);
+  const attr = attrs ? ` ${attrs}` : "";
+  return `<picture>
+            ${webp ? `<source srcset="${escapeAttr(webp)}" type="image/webp">` : ""}
+            <img src="${escapeAttr(imagePath)}" alt="${escapeAttr(alt)}"${attr}>
+          </picture>`;
+}
+
+function renderHeader() {
+  return `  <header class="site-header">
+    <nav class="nav">
+      <a href="../index.html" class="logo visible">J. V. Dias</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#works">Projetos</a></li>
+        <li><a href="./">Ensaios</a></li>
+        <li><a href="../about.html">Sobre</a></li>
+      </ul>
+    </nav>
+  </header>`;
+}
+
+function renderFooter() {
+  return `  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-name">J. V. Dias</span>
+      <div class="footer-links">
+        <a href="mailto:joaodias@jvdias.com">joaodias@jvdias.com</a>
+        <span class="footer-sep">·</span>
+        <a href="https://www.linkedin.com/in/JvDiasM" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <span class="footer-sep">·</span>
+        <a href="../about.html">Sobre</a>
+      </div>
+    </div>
+  </footer>`;
+}
+
+function renderEssayIndex(posts) {
+  const entries = posts.map((post) => {
+    const style = post.coverPosition ? `style="object-position: ${escapeAttr(post.coverPosition)};" ` : "";
+    const cover = post.coverImage
+      ? `<div class="ensaio-cover">${pictureMarkup(post.coverImage, "", `${style}loading="lazy" decoding="async"`)}</div>`
+      : "";
+
+    return `      <!-- ENSAIO: ${post.slug} -->
+      <a href="${post.slug}.html" class="ensaio-entry">
+        ${cover}
+        <div class="ensaio-entry-content">
+          <time class="ensaio-date" datetime="${post.date}">${formatDate(post.date)}</time>
+          <h2 class="ensaio-entry-title">${escapeHtml(post.title)}</h2>
+          <p class="ensaio-excerpt">${escapeHtml(post.excerpt)}</p>
+          <div class="ensaio-meta">
+            ${post.tags.map((tag) => `<span class="ensaio-tag">${escapeHtml(tag)}</span>`).join("\n            ")}
+          </div>
+        </div>
+      </a>`;
+  }).join("\n\n");
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ensaios — J. V. Dias</title>
+  <meta name="description" content="Ensaios semanais sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="${SITE_URL}/ensaios/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${SITE_URL}/ensaios/">
+  <meta property="og:title" content="Ensaios — J. V. Dias">
+  <meta property="og:description" content="Ensaios semanais sobre cinema, direção visual, 3D e processo criativo.">
+  <meta property="og:image" content="${SITE_URL}/assets/images/optimized/og-jvdias.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400&family=Inter:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+${renderHeader()}
+
+  <main class="ensaios-page">
+
+    <div class="ensaios-masthead">
+      <span class="ensaios-dateline">Vol. 01 · 2026</span>
+      <h1 class="ensaios-title">Ensaios</h1>
+      <p class="ensaios-subtitle">Textos semanais sobre imagem, processo e construção visual.</p>
+    </div>
+
+    <div class="ensaio-list" id="ensaio-list">
+
+${entries}
+
+    </div>
+
+  </main>
+
+${renderFooter()}
+
+</body>
+</html>
+`;
+}
+
+function renderStaticPost(post, index, published, md) {
+  const prev = published[index + 1];
+  const next = published[index - 1];
+  const dateStr = formatDate(post.date);
+  const readTime = readingTime(md);
+  const coverPosition = post.coverPosition || "center";
+  const cover = post.coverImage
+    ? `<div class="ensaio-cover-hero"><img src="${escapeAttr(post.coverImage)}" alt="${escapeAttr(post.title)}" style="object-position: ${escapeAttr(coverPosition)};" decoding="async"></div>`
+    : "";
+  const tags = post.tags?.length
+    ? `<div class="ensaio-tags">${post.tags.map((tag) => `<span class="ensaio-tag">${escapeHtml(tag)}</span>`).join("")}</div>`
+    : "";
+  const videoId = post.videoUrl?.match(/vimeo\.com\/(\d+)/)?.[1];
+  const video = videoId
+    ? `<div class="ensaio-video"><div class="ensaio-video-player"><iframe src="https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" title="Vídeo: ${escapeAttr(post.title)}" frameborder="0"></iframe></div></div>`
+    : "";
+  const nav = prev || next
+    ? `<nav class="ensaio-nav">
+        ${prev ? `<a href="${prev.slug}.html" class="ensaio-nav-link ensaio-nav-prev"><span class="ensaio-nav-label">&larr; Anterior</span><span class="ensaio-nav-title">${escapeHtml(prev.title)}</span></a>` : "<span></span>"}
+        ${next ? `<a href="${next.slug}.html" class="ensaio-nav-link ensaio-nav-next"><span class="ensaio-nav-label">Próximo &rarr;</span><span class="ensaio-nav-title">${escapeHtml(next.title)}</span></a>` : "<span></span>"}
+      </nav>`
+    : "";
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(post.title)} — J. V. Dias</title>
+  <meta name="description" content="${escapeAttr(post.excerpt)}">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="${SITE_URL}/ensaios/${post.slug}.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${SITE_URL}/ensaios/${post.slug}.html">
+  <meta property="og:title" content="${escapeAttr(post.title)} — J. V. Dias">
+  <meta property="og:description" content="${escapeAttr(post.excerpt)}">
+  <meta property="og:image" content="${absoluteUrl(post.coverImage || "../assets/images/optimized/og-jvdias.jpg")}">
+  <meta property="article:published_time" content="${post.date}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400&family=Inter:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+${renderHeader()}
+
+  <main class="ensaio-page">
+    <a href="./" class="back-link">&larr; Ensaios</a>
+
+    <article class="ensaio-article">
+      ${cover}
+
+      <header class="ensaio-header">
+        <h1 class="ensaio-title">${escapeHtml(post.title)}</h1>
+        <div class="ensaio-info"><time datetime="${post.date}">${dateStr}</time><span class="ensaio-info-sep">·</span><span>${readTime} min de leitura</span></div>
+      </header>
+
+      ${video}
+
+      <div class="ensaio-body">
+${renderMarkdown(md)}
+      </div>
+
+      <div class="ensaio-signature">
+        <div class="ensaio-signature-rule" aria-hidden="true">· · ·</div>
+        <div class="ensaio-signature-author">— J. V. Dias</div>
+        <div class="ensaio-signature-place">${escapeHtml(post.location || "São Paulo")}, ${formatMonth(post.date)}</div>
+      </div>
+
+      ${tags}
+    </article>
+
+    ${nav}
+  </main>
+
+${renderFooter()}
+
+</body>
+</html>
+`;
+}
+
+function renderSitemap(posts) {
+  const pages = [
+    { loc: "/", priority: "1.0" },
+    { loc: "/about.html", priority: "0.8" },
+    { loc: "/ensaios/", priority: "0.8" },
+    ...fs.readdirSync(path.join(ROOT, "projects"))
+      .filter((file) => file.endsWith(".html"))
+      .sort()
+      .map((file) => ({ loc: `/projects/${file}`, priority: "0.7" })),
+    ...posts.map((post) => ({ loc: `/ensaios/${post.slug}.html`, lastmod: post.date, priority: "0.7" })),
+  ];
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map((page) => `  <url>
+    <loc>${SITE_URL}${page.loc}</loc>${page.lastmod ? `\n    <lastmod>${page.lastmod}</lastmod>` : ""}
+    <priority>${page.priority}</priority>
+  </url>`).join("\n")}
+</urlset>
+`;
+}
+
+function renderRobots() {
+  return `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
+}
+
+function upsertCanonical(file, href) {
+  let text = read(file);
+  if (text.includes('rel="canonical"')) return;
+  const canonical = `  <link rel="canonical" href="${href}">`;
+  text = text.replace(/(  <meta name="theme-color" content="#0a0a0a">\n)/, `$1${canonical}\n`);
+  write(file, text);
+}
+
+const posts = JSON.parse(read("ensaios/posts/posts.json"));
+const published = posts
+  .filter((post) => !post.draft)
+  .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+write("ensaios/index.html", renderEssayIndex(published));
+
+for (const post of posts) {
+  const out = `ensaios/${post.slug}.html`;
+  if (post.draft) {
+    if (exists(out)) fs.unlinkSync(path.join(ROOT, out));
+    continue;
+  }
+
+  const mdPath = path.join(POSTS_DIR, `${post.slug}.md`);
+  if (!fs.existsSync(mdPath)) {
+    throw new Error(`Missing markdown file for post: ${post.slug}`);
+  }
+
+  const md = fs.readFileSync(mdPath, "utf8");
+  const index = published.findIndex((p) => p.slug === post.slug);
+  write(out, renderStaticPost(post, index, published, md));
+}
+
+write("sitemap.xml", renderSitemap(published));
+write("robots.txt", renderRobots());
+
+upsertCanonical("index.html", `${SITE_URL}/`);
+upsertCanonical("about.html", `${SITE_URL}/about.html`);
+
+for (const file of fs.readdirSync(path.join(ROOT, "projects")).filter((name) => name.endsWith(".html"))) {
+  upsertCanonical(`projects/${file}`, `${SITE_URL}/projects/${file}`);
+}
+
+console.log(`Built ${published.length} essay pages, sitemap.xml, and robots.txt.`);
