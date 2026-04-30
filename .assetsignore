@@ -33,3 +33,8 @@ assets/images/ZenGarden_Thumb.png
 assets/images/frame-9.png
 assets/images/manha_cinzenta_foto.jpg
 assets/images/perfectly-a-strangeness.jpeg
+
+# Local documents and source artwork
+assets/images/*.pdf
+assets/images/*.ai
+assets/images/*.docx

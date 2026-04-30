@@ -7,3 +7,27 @@ assets/images/Carrossel Taste.html
 assets/images/carousel.jsx
 assets/images/design-canvas.jsx
 assets/images/export.html
+
+# Local tooling and dependency folders
+.claude/
+node_modules/
+
+# Local documents and source artwork
+assets/images/*.pdf
+assets/images/*.ai
+assets/images/*.docx
+
+# Original heavy/source images; production pages use assets/images/optimized/.
+assets/images/12_532.avif
+assets/images/12_532.png
+assets/images/12_532.webp
+assets/images/Breach_Thumb.png
+assets/images/Foto Ana.jpeg
+assets/images/Foto_Friboi.jpeg
+assets/images/Foto_Thumb.jpeg
+assets/images/Taste.jpg
+assets/images/The_Drama.jpg
+assets/images/ZenGarden_Thumb.png
+assets/images/frame-9.png
+assets/images/manha_cinzenta_foto.jpg
+assets/images/perfectly-a-strangeness.jpeg

@@ -133,6 +133,47 @@ function absoluteUrl(url) {
   return `${SITE_URL}/${url.replace(/^\.\.\//, "").replace(/^\.\//, "")}`;
 }
 
+function imageDimensions(imagePath) {
+  const local = path.normalize(path.join(ENSAIOS_DIR, imagePath));
+  if (!fs.existsSync(local)) return null;
+
+  const buffer = fs.readFileSync(local);
+  if (buffer.length >= 24 && buffer.toString("ascii", 1, 4) === "PNG") {
+    return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+  }
+
+  if (buffer[0] !== 0xff || buffer[1] !== 0xd8) return null;
+
+  let offset = 2;
+  const sofMarkers = new Set([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf]);
+  while (offset < buffer.length) {
+    while (buffer[offset] === 0xff) offset++;
+    const marker = buffer[offset++];
+    if (marker === 0xda || marker === 0xd9) break;
+    if (offset + 2 > buffer.length) break;
+    const length = buffer.readUInt16BE(offset);
+    if (length < 2 || offset + length > buffer.length) break;
+    if (sofMarkers.has(marker)) {
+      return {
+        height: buffer.readUInt16BE(offset + 3),
+        width: buffer.readUInt16BE(offset + 5),
+      };
+    }
+    offset += length;
+  }
+
+  return null;
+}
+
+function imageDimensionAttrs(imagePath) {
+  const dimensions = imageDimensions(imagePath);
+  return dimensions ? `width="${dimensions.width}" height="${dimensions.height}"` : "";
+}
+
+function mergeAttrs(...attrs) {
+  return attrs.filter(Boolean).join(" ");
+}
+
 function safeJsonLd(value) {
   return JSON.stringify(value, null, 2).replace(/</g, "\\u003c");
 }
@@ -252,10 +293,11 @@ function webpCandidate(imagePath) {
 function pictureMarkup(imagePath, alt, attrs = "") {
   if (!imagePath) return "";
   const webp = webpCandidate(imagePath);
-  const attr = attrs ? ` ${attrs}` : "";
+  const attr = mergeAttrs(imageDimensionAttrs(imagePath), attrs);
+  const attrText = attr ? ` ${attr}` : "";
   return `<picture>
             ${webp ? `<source srcset="${escapeAttr(webp)}" type="image/webp">` : ""}
-            <img src="${escapeAttr(imagePath)}" alt="${escapeAttr(alt)}"${attr}>
+            <img src="${escapeAttr(imagePath)}" alt="${escapeAttr(alt)}"${attrText}>
           </picture>`;
 }
 
@@ -365,8 +407,9 @@ function renderStaticPost(post, index, published, md) {
   const dateStr = formatDate(post.date);
   const readTime = readingTime(md);
   const coverPosition = post.coverPosition || "center";
+  const coverAttrs = mergeAttrs(`style="object-position: ${escapeAttr(coverPosition)};"`, imageDimensionAttrs(post.coverImage), 'decoding="async"');
   const cover = post.coverImage
-    ? `<div class="ensaio-cover-hero"><img src="${escapeAttr(post.coverImage)}" alt="${escapeAttr(post.title)}" style="object-position: ${escapeAttr(coverPosition)};" decoding="async"></div>`
+    ? `<div class="ensaio-cover-hero"><img src="${escapeAttr(post.coverImage)}" alt="${escapeAttr(post.title)}" ${coverAttrs}></div>`
     : "";
   const tags = post.tags?.length
     ? `<div class="ensaio-tags">${post.tags.map((tag) => `<span class="ensaio-tag">${escapeHtml(tag)}</span>`).join("")}</div>`
