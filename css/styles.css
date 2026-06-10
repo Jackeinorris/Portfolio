@@ -155,7 +155,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0 2rem 0.5rem;
+  padding: 0 2rem 2rem;
   background: linear-gradient(to top, rgba(10,10,10,0.6), transparent 50%);
 }
 
@@ -188,6 +188,60 @@ button:focus-visible {
   opacity: 0.45;
   font-weight: 400;
   margin: 0 0.15em;
+}
+
+.hero-positioning {
+  max-width: 48ch;
+  margin-top: 0.7rem;
+  color: #eae6df;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.95rem, 1.4vw, 1.12rem);
+  line-height: 1.55;
+  opacity: 0.78;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 1.15rem;
+}
+
+.hero-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 1rem;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.hero-action--primary {
+  border: 1px solid rgba(234, 230, 223, 0.42);
+  background: rgba(10, 10, 10, 0.16);
+}
+
+.hero-action--secondary {
+  border-bottom: 1px solid rgba(234, 230, 223, 0.35);
+  opacity: 0.76;
+}
+
+.hero-action:hover {
+  opacity: 1;
+}
+
+.hero-action--primary:hover {
+  background: rgba(234, 230, 223, 0.08);
+  border-color: rgba(234, 230, 223, 0.72);
+}
+
+.hero-action--secondary:hover {
+  border-color: rgba(234, 230, 223, 0.72);
 }
 
 /* --- Scroll indicator --- */
@@ -376,8 +430,12 @@ button:focus-visible {
   transform: translate(0, 0);
 }
 
-.work:hover .work-caption p {
-  opacity: 0.7;
+.work:hover .work-meta {
+  opacity: 0.72;
+}
+
+.work:hover .work-description {
+  opacity: 0.86;
 }
 
 .work-caption p {
@@ -388,6 +446,23 @@ button:focus-visible {
   text-transform: uppercase;
   opacity: 0.5;
   margin-top: 0.25rem;
+}
+
+.work-meta,
+.archive-meta {
+  color: #eae6df;
+}
+
+.work-description,
+.archive-description {
+  max-width: 46ch;
+  color: #eae6df;
+  font-size: 0.92rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.55;
+  text-transform: none;
+  opacity: 0.66;
 }
 
 /* --- Archive / other projects --- */
@@ -473,8 +548,12 @@ button:focus-visible {
   transform: translate(0, 0);
 }
 
-.archive-card:hover .archive-caption p {
-  opacity: 0.6;
+.archive-card:hover .archive-meta {
+  opacity: 0.64;
+}
+
+.archive-card:hover .archive-description {
+  opacity: 0.82;
 }
 
 .archive-caption p {
@@ -494,6 +573,66 @@ button:focus-visible {
 .archive-card--placeholder .archive-caption h3 {
   font-style: italic;
   opacity: 0.6;
+}
+
+/* --- Contact CTA --- */
+.contact-cta {
+  padding: 5rem 2rem 5.5rem;
+  border-top: 1px solid rgba(234, 230, 223, 0.08);
+}
+
+.contact-cta-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-kicker {
+  margin-bottom: 1rem;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
+.contact-cta h2 {
+  max-width: 15ch;
+  margin: 0 auto 1rem;
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  line-height: 1.12;
+}
+
+.contact-text {
+  max-width: 48ch;
+  margin: 0 auto 2rem;
+  opacity: 0.68;
+  line-height: 1.75;
+}
+
+.contact-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.4rem;
+}
+
+.contact-actions a {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(234, 230, 223, 0.3);
+  padding-bottom: 3px;
+  opacity: 0.72;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.contact-actions a:hover {
+  opacity: 1;
+  border-color: #eae6df;
 }
 
 /* --- Site footer --- */
@@ -1430,6 +1569,24 @@ button:focus-visible {
     letter-spacing: 0.1em;
   }
 
+  .hero-positioning {
+    max-width: 34ch;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    gap: 0.65rem;
+    margin-top: 1rem;
+  }
+
+  .hero-action {
+    min-height: 40px;
+    padding: 0 0.85rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
   .scroll-indicator {
     right: 1.25rem;
     bottom: 1.5rem;
@@ -1454,6 +1611,12 @@ button:focus-visible {
     font-size: 1.15rem;
   }
 
+  .work-description,
+  .archive-description {
+    max-width: 100%;
+    font-size: 0.88rem;
+  }
+
   /* --- Archive --- */
   .archive {
     padding: 2rem 1.25rem 4rem;
@@ -1462,6 +1625,26 @@ button:focus-visible {
   .archive-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  /* --- Contact CTA --- */
+  .contact-cta {
+    padding: 4rem 1.25rem 4.25rem;
+  }
+
+  .contact-cta h2 {
+    max-width: 14ch;
+    font-size: 1.65rem;
+  }
+
+  .contact-text {
+    font-size: 0.95rem;
+  }
+
+  .contact-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
   }
 
   /* --- Footer --- */
