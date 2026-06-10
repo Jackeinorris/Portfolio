@@ -310,6 +310,7 @@ function renderHeader() {
         <li><a href="../index.html#works">Projetos</a></li>
         <li><a href="./">Ensaios</a></li>
         <li><a href="../about.html">Sobre</a></li>
+        <li><a href="../index.html#contact">Contato</a></li>
       </ul>
     </nav>
   </header>`;
@@ -373,6 +374,7 @@ function renderEssayIndex(posts) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400&family=Inter:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="alternate" type="application/rss+xml" title="Ensaios — J. V. Dias" href="${SITE_URL}/ensaios/feed.xml">
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -449,6 +451,7 @@ function renderStaticPost(post, index, published, md) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400&family=Inter:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="alternate" type="application/rss+xml" title="Ensaios — J. V. Dias" href="${SITE_URL}/ensaios/feed.xml">
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -513,6 +516,40 @@ ${pages.map((page) => `  <url>
 `;
 }
 
+function rssDate(date) {
+  return new Date(`${date}T12:00:00Z`).toUTCString();
+}
+
+function renderFeed(posts) {
+  const items = posts.map((post) => {
+    const url = `${SITE_URL}/ensaios/${post.slug}.html`;
+    const md = fs.readFileSync(path.join(POSTS_DIR, `${post.slug}.md`), "utf8");
+    const html = renderMarkdown(md).replace(/\]\]>/g, "]]&gt;");
+    return `    <item>
+      <title>${escapeHtml(post.title)}</title>
+      <link>${url}</link>
+      <guid isPermaLink="true">${url}</guid>
+      <pubDate>${rssDate(post.date)}</pubDate>
+      <description>${escapeHtml(post.excerpt)}</description>
+      <content:encoded><![CDATA[${html}]]></content:encoded>
+    </item>`;
+  }).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Ensaios — J. V. Dias</title>
+    <link>${SITE_URL}/ensaios/</link>
+    <atom:link href="${SITE_URL}/ensaios/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Ensaios sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.</description>
+    <language>pt-BR</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+${items}
+  </channel>
+</rss>
+`;
+}
+
 function renderRobots() {
   return `User-agent: *
 Allow: /
@@ -554,6 +591,7 @@ for (const post of posts) {
 }
 
 write("sitemap.xml", renderSitemap(published));
+write("ensaios/feed.xml", renderFeed(published));
 write("robots.txt", renderRobots());
 
 upsertCanonical("index.html", `${SITE_URL}/`);
@@ -563,4 +601,4 @@ for (const file of fs.readdirSync(path.join(ROOT, "projects")).filter((name) => 
   upsertCanonical(`projects/${file}`, `${SITE_URL}/projects/${file}`);
 }
 
-console.log(`Built ${published.length} essay pages, sitemap.xml, and robots.txt.`);
+console.log(`Built ${published.length} essay pages, feed.xml, sitemap.xml, and robots.txt.`);

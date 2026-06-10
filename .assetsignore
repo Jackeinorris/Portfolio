@@ -7,6 +7,7 @@ node_modules
 .gitignore
 .assetsignore
 package.json
+package-lock.json
 wrangler.jsonc
 scripts/**
 
