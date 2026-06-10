@@ -220,7 +220,7 @@ function essayIndexStructuredData(posts) {
       "@id": `${url}#webpage`,
       url,
       name: "Ensaios — J. V. Dias",
-      description: "Ensaios semanais sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.",
+      description: "Ensaios sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.",
       inLanguage: "pt-BR",
       isPartOf: { "@id": WEBSITE_ID },
       about: { "@id": PERSON_ID },
@@ -360,14 +360,14 @@ function renderEssayIndex(posts) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ensaios — J. V. Dias</title>
-  <meta name="description" content="Ensaios semanais sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.">
+  <meta name="description" content="Ensaios sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="${SITE_URL}/ensaios/">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="${SITE_URL}/ensaios/">
   <meta property="og:title" content="Ensaios — J. V. Dias">
-  <meta property="og:description" content="Ensaios semanais sobre cinema, direção visual, 3D e processo criativo.">
+  <meta property="og:description" content="Ensaios sobre cinema, direção visual, 3D e processo criativo.">
   <meta property="og:image" content="${SITE_URL}/assets/images/optimized/og-jvdias.jpg">
   <meta name="twitter:card" content="summary_large_image">
   ${structuredDataScript(essayIndexStructuredData(posts))}
@@ -376,19 +376,22 @@ function renderEssayIndex(posts) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400&family=Inter:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
   <link rel="alternate" type="application/rss+xml" title="Ensaios — J. V. Dias" href="${SITE_URL}/ensaios/feed.xml">
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
 
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
 ${renderHeader()}
 
-  <main class="ensaios-page">
+  <main class="ensaios-page" id="conteudo">
 
     <div class="ensaios-masthead">
       <span class="ensaios-dateline">Vol. 01 · 2026</span>
       <h1 class="ensaios-title">Ensaios</h1>
-      <p class="ensaios-subtitle">Textos semanais sobre imagem, processo e construção visual.</p>
+      <p class="ensaios-subtitle">Textos sobre imagem, processo e construção visual.</p>
     </div>
 
     <div class="ensaio-list" id="ensaio-list">
@@ -454,14 +457,17 @@ function renderStaticPost(post, index, published, md) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400&family=Inter:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
   <link rel="alternate" type="application/rss+xml" title="Ensaios — J. V. Dias" href="${SITE_URL}/ensaios/feed.xml">
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
 
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
 ${renderHeader()}
 
-  <main class="ensaio-page">
+  <main class="ensaio-page" id="conteudo">
     <a href="./" class="back-link">&larr; Ensaios</a>
 
     <article class="ensaio-article">

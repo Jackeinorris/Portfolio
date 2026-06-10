@@ -120,6 +120,27 @@ button:focus-visible {
   outline-offset: 4px;
 }
 
+/* --- Skip link (visível apenas ao receber foco via teclado) --- */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 300;
+  padding: 0.75rem 1.25rem;
+  background: #161616;
+  color: #eae6df;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(234, 230, 223, 0.4);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
 /* --- Hero --- */
 .hero {
   position: relative;
