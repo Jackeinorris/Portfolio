@@ -104,6 +104,7 @@
         <li><a href="index.html#works">Projetos</a></li>
         <li><a href="ensaios/">Ensaios</a></li>
         <li><a href="about.html">Sobre</a></li>
+        <li><a href="#contact">Contato</a></li>
       </ul>
     </nav>
   </header>
@@ -112,7 +113,10 @@
 
     <div class="about-hero">
       <div class="about-photo">
-        <img src="assets/images/foto-perfil.jpeg" alt="J. V. Dias" decoding="async" width="1595" height="1600">
+        <picture>
+          <source srcset="assets/images/optimized/foto-perfil.webp" type="image/webp">
+          <img src="assets/images/optimized/foto-perfil.jpg" alt="J. V. Dias" decoding="async" width="800" height="803">
+        </picture>
       </div>
       <div class="about-intro">
         <h1 class="about-page-title">J. V. Dias</h1>
@@ -216,7 +220,7 @@
 
     </div>
 
-    <div class="about-page-contact">
+    <div class="about-page-contact" id="contact">
       <h2 class="about-heading">Contato</h2>
       <div class="about-contact-links">
         <a href="mailto:joaodias@jvdias.com">joaodias@jvdias.com</a>
@@ -225,6 +229,19 @@
     </div>
 
   </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-name">J. V. Dias</span>
+      <div class="footer-links">
+        <a href="mailto:joaodias@jvdias.com">joaodias@jvdias.com</a>
+        <span class="footer-sep">·</span>
+        <a href="https://www.linkedin.com/in/JvDiasM" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <span class="footer-sep">·</span>
+        <a href="about.html">Sobre</a>
+      </div>
+    </div>
+  </footer>
 
 </body>
 </html>
