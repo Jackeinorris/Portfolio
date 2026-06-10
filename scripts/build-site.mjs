@@ -134,6 +134,7 @@ function absoluteUrl(url) {
 }
 
 function imageDimensions(imagePath) {
+  if (!imagePath) return null;
   const local = path.normalize(path.join(ENSAIOS_DIR, imagePath));
   if (!fs.existsSync(local)) return null;
 
