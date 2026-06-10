@@ -36,6 +36,10 @@ http.createServer((req, res) => {
   if (fs.existsSync(file) && fs.statSync(file).isDirectory()) {
     file = path.join(file, "index.html");
   }
+  // Mimic Cloudflare html_handling: /about resolves to /about.html.
+  if (!fs.existsSync(file) && !path.extname(file) && fs.existsSync(`${file}.html`)) {
+    file = `${file}.html`;
+  }
   if (!fs.existsSync(file)) {
     file = path.join(ROOT, "404.html");
     if (!fs.existsSync(file)) {
