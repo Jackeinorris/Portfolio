@@ -10,6 +10,8 @@ const PERSON_ID = `${SITE_URL}/#person`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 const DEFAULT_IMAGE = `${SITE_URL}/assets/images/optimized/og-jvdias.jpg`;
 const PROFILE_IMAGE = `${SITE_URL}/assets/images/foto-perfil.jpeg`;
+const CF_BEACON = `  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5111ddaf126b4d4da730a4847b7031a9"}'></script>`;
 
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const write = (file, text) => fs.writeFileSync(path.join(ROOT, file), text, "utf8");
@@ -399,6 +401,7 @@ ${entries}
 
 ${renderFooter()}
 
+${CF_BEACON}
 </body>
 </html>
 `;
@@ -489,6 +492,7 @@ ${renderMarkdown(md)}
 
 ${renderFooter()}
 
+${CF_BEACON}
 </body>
 </html>
 `;
