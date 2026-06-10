@@ -233,7 +233,7 @@ function essayIndexStructuredData(posts) {
       name: "Ensaios",
       inLanguage: "pt-BR",
       author: { "@id": PERSON_ID },
-      blogPost: posts.map((post) => ({ "@id": `${SITE_URL}/ensaios/${post.slug}.html#article` })),
+      blogPost: posts.map((post) => ({ "@id": `${SITE_URL}/ensaios/${post.slug}#article` })),
     },
     {
       "@type": "ItemList",
@@ -241,7 +241,7 @@ function essayIndexStructuredData(posts) {
       itemListElement: posts.map((post, index) => ({
         "@type": "ListItem",
         position: index + 1,
-        url: `${SITE_URL}/ensaios/${post.slug}.html`,
+        url: `${SITE_URL}/ensaios/${post.slug}`,
         name: post.title,
       })),
     },
@@ -249,7 +249,7 @@ function essayIndexStructuredData(posts) {
 }
 
 function essayPostStructuredData(post, md, readTime) {
-  const url = `${SITE_URL}/ensaios/${post.slug}.html`;
+  const url = `${SITE_URL}/ensaios/${post.slug}`;
   const image = absoluteUrl(post.coverImage || "../assets/images/optimized/og-jvdias.jpg");
   const wordCount = md.trim().split(/\s+/).filter(Boolean).length;
   return [
@@ -307,12 +307,12 @@ function pictureMarkup(imagePath, alt, attrs = "") {
 function renderHeader() {
   return `  <header class="site-header">
     <nav class="nav">
-      <a href="../index.html" class="logo visible">J. V. Dias</a>
+      <a href="/" class="logo visible">J. V. Dias</a>
       <ul class="nav-links">
-        <li><a href="../index.html#works">Projetos</a></li>
-        <li><a href="./">Ensaios</a></li>
-        <li><a href="../about.html">Sobre</a></li>
-        <li><a href="../index.html#contact">Contato</a></li>
+        <li><a href="/#works">Projetos</a></li>
+        <li><a href="/ensaios/">Ensaios</a></li>
+        <li><a href="/about">Sobre</a></li>
+        <li><a href="/#contact">Contato</a></li>
       </ul>
     </nav>
   </header>`;
@@ -327,7 +327,7 @@ function renderFooter() {
         <span class="footer-sep">·</span>
         <a href="https://www.linkedin.com/in/JvDiasM" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         <span class="footer-sep">·</span>
-        <a href="../about.html">Sobre</a>
+        <a href="/about">Sobre</a>
       </div>
     </div>
   </footer>`;
@@ -341,7 +341,7 @@ function renderEssayIndex(posts) {
       : "";
 
     return `      <!-- ENSAIO: ${post.slug} -->
-      <a href="${post.slug}.html" class="ensaio-entry">
+      <a href="${post.slug}" class="ensaio-entry">
         ${cover}
         <div class="ensaio-entry-content">
           <time class="ensaio-date" datetime="${post.date}">${formatDate(post.date)}</time>
@@ -429,8 +429,8 @@ function renderStaticPost(post, index, published, md) {
     : "";
   const nav = prev || next
     ? `<nav class="ensaio-nav">
-        ${prev ? `<a href="${prev.slug}.html" class="ensaio-nav-link ensaio-nav-prev"><span class="ensaio-nav-label">&larr; Anterior</span><span class="ensaio-nav-title">${escapeHtml(prev.title)}</span></a>` : "<span></span>"}
-        ${next ? `<a href="${next.slug}.html" class="ensaio-nav-link ensaio-nav-next"><span class="ensaio-nav-label">Próximo &rarr;</span><span class="ensaio-nav-title">${escapeHtml(next.title)}</span></a>` : "<span></span>"}
+        ${prev ? `<a href="${prev.slug}" class="ensaio-nav-link ensaio-nav-prev"><span class="ensaio-nav-label">&larr; Anterior</span><span class="ensaio-nav-title">${escapeHtml(prev.title)}</span></a>` : "<span></span>"}
+        ${next ? `<a href="${next.slug}" class="ensaio-nav-link ensaio-nav-next"><span class="ensaio-nav-label">Próximo &rarr;</span><span class="ensaio-nav-title">${escapeHtml(next.title)}</span></a>` : "<span></span>"}
       </nav>`
     : "";
 
@@ -442,10 +442,10 @@ function renderStaticPost(post, index, published, md) {
   <title>${escapeHtml(post.title)} — J. V. Dias</title>
   <meta name="description" content="${escapeAttr(post.excerpt)}">
   <meta name="theme-color" content="#0a0a0a">
-  <link rel="canonical" href="${SITE_URL}/ensaios/${post.slug}.html">
+  <link rel="canonical" href="${SITE_URL}/ensaios/${post.slug}">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="${SITE_URL}/ensaios/${post.slug}.html">
+  <meta property="og:url" content="${SITE_URL}/ensaios/${post.slug}">
   <meta property="og:title" content="${escapeAttr(post.title)} — J. V. Dias">
   <meta property="og:description" content="${escapeAttr(post.excerpt)}">
   <meta property="og:image" content="${absoluteUrl(post.coverImage || "../assets/images/optimized/og-jvdias.jpg")}">
@@ -468,7 +468,7 @@ function renderStaticPost(post, index, published, md) {
 ${renderHeader()}
 
   <main class="ensaio-page" id="conteudo">
-    <a href="./" class="back-link">&larr; Ensaios</a>
+    <a href="/ensaios/" class="back-link">&larr; Ensaios</a>
 
     <article class="ensaio-article">
       ${cover}
@@ -507,13 +507,13 @@ ${CF_BEACON}
 function renderSitemap(posts) {
   const pages = [
     { loc: "/", priority: "1.0" },
-    { loc: "/about.html", priority: "0.8" },
+    { loc: "/about", priority: "0.8" },
     { loc: "/ensaios/", priority: "0.8" },
     ...fs.readdirSync(path.join(ROOT, "projects"))
       .filter((file) => file.endsWith(".html"))
       .sort()
-      .map((file) => ({ loc: `/projects/${file}`, priority: "0.7" })),
-    ...posts.map((post) => ({ loc: `/ensaios/${post.slug}.html`, lastmod: post.date, priority: "0.7" })),
+      .map((file) => ({ loc: `/projects/${file.replace(/\.html$/, "")}`, priority: "0.7" })),
+    ...posts.map((post) => ({ loc: `/ensaios/${post.slug}`, lastmod: post.date, priority: "0.7" })),
   ];
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -532,7 +532,7 @@ function rssDate(date) {
 
 function renderFeed(posts) {
   const items = posts.map((post) => {
-    const url = `${SITE_URL}/ensaios/${post.slug}.html`;
+    const url = `${SITE_URL}/ensaios/${post.slug}`;
     const md = fs.readFileSync(path.join(POSTS_DIR, `${post.slug}.md`), "utf8");
     const html = renderMarkdown(md).replace(/\]\]>/g, "]]&gt;");
     return `    <item>
@@ -605,10 +605,10 @@ write("ensaios/feed.xml", renderFeed(published));
 write("robots.txt", renderRobots());
 
 upsertCanonical("index.html", `${SITE_URL}/`);
-upsertCanonical("about.html", `${SITE_URL}/about.html`);
+upsertCanonical("about.html", `${SITE_URL}/about`);
 
 for (const file of fs.readdirSync(path.join(ROOT, "projects")).filter((name) => name.endsWith(".html"))) {
-  upsertCanonical(`projects/${file}`, `${SITE_URL}/projects/${file}`);
+  upsertCanonical(`projects/${file}`, `${SITE_URL}/projects/${file.replace(/\.html$/, "")}`);
 }
 
 console.log(`Built ${published.length} essay pages, feed.xml, sitemap.xml, and robots.txt.`);
