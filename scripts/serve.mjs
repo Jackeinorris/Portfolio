@@ -29,7 +29,7 @@ const TYPES = {
 http.createServer((req, res) => {
   const url = decodeURIComponent(new URL(req.url, `http://localhost:${PORT}`).pathname);
   let file = path.normalize(path.join(ROOT, url));
-  if (!file.startsWith(ROOT)) {
+  if (file !== ROOT && !file.startsWith(ROOT + path.sep)) {
     res.writeHead(403).end("Forbidden");
     return;
   }

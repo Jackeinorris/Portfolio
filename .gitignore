@@ -16,6 +16,9 @@ node_modules/
 assets/images/*.pdf
 assets/images/*.ai
 assets/images/*.docx
+assets/images/*.zip
+assets/images/*.msi
+assets/images/*.mp4
 
 # Original heavy/source images; production pages use assets/images/optimized/.
 assets/images/12_532.avif

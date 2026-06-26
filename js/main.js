@@ -15,8 +15,9 @@ if (hero && logo) {
 // Lazy-load Vimeo: show thumbnail first, replace with iframe on click
 function loadVimeo(el) {
   const id = el.dataset.vimeo;
+  if (!id) return;
   const iframe = document.createElement("iframe");
-  iframe.src = `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0`;
+  iframe.src = `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0&dnt=1`;
   iframe.allow = "autoplay; fullscreen; picture-in-picture";
   iframe.title = `Vídeo: ${el.dataset.title || el.querySelector("img")?.alt || "player Vimeo"}`;
   iframe.loading = "lazy";
@@ -24,6 +25,7 @@ function loadVimeo(el) {
   el.innerHTML = "";
   el.appendChild(iframe);
   el.classList.remove("work-lazy");
+  iframe.focus();
 }
 
 document.querySelectorAll(".work-lazy").forEach((el) => {
@@ -31,12 +33,15 @@ document.querySelectorAll(".work-lazy").forEach((el) => {
 });
 
 // "Assistir projeto" button on project pages
-function playProjectVideo() {
-  const hero = document.querySelector(".project-hero");
-  if (!hero) return;
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  hero.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
-  if (hero.classList.contains("work-lazy")) {
-    loadVimeo(hero);
-  }
-}
+document.querySelectorAll("[data-play-video]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    const projectHero = document.querySelector(".project-hero");
+    if (!projectHero) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    projectHero.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    if (projectHero.classList.contains("work-lazy")) {
+      loadVimeo(projectHero);
+    }
+  });
+});

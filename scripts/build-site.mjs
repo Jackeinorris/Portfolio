@@ -9,7 +9,7 @@ const ENSAIOS_DIR = path.join(ROOT, "ensaios");
 const PERSON_ID = `${SITE_URL}/#person`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 const DEFAULT_IMAGE = `${SITE_URL}/assets/images/optimized/og-jvdias.jpg`;
-const PROFILE_IMAGE = `${SITE_URL}/assets/images/foto-perfil.jpeg`;
+const PROFILE_IMAGE = `${SITE_URL}/assets/images/optimized/foto-perfil.jpg`;
 const CF_BEACON = `  <!-- Cloudflare Web Analytics -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5111ddaf126b4d4da730a4847b7031a9"}'></script>`;
 
@@ -416,16 +416,16 @@ function renderStaticPost(post, index, published, md) {
   const dateStr = formatDate(post.date);
   const readTime = readingTime(md);
   const coverPosition = post.coverPosition || "center";
-  const coverAttrs = mergeAttrs(`style="object-position: ${escapeAttr(coverPosition)};"`, imageDimensionAttrs(post.coverImage), 'decoding="async"');
+  const coverAttrs = `style="object-position: ${escapeAttr(coverPosition)};" decoding="async"`;
   const cover = post.coverImage
-    ? `<div class="ensaio-cover-hero"><img src="${escapeAttr(post.coverImage)}" alt="${escapeAttr(post.title)}" ${coverAttrs}></div>`
+    ? `<div class="ensaio-cover-hero">${pictureMarkup(post.coverImage, post.title, coverAttrs)}</div>`
     : "";
   const tags = post.tags?.length
     ? `<div class="ensaio-tags">${post.tags.map((tag) => `<span class="ensaio-tag">${escapeHtml(tag)}</span>`).join("")}</div>`
     : "";
   const videoId = post.videoUrl?.match(/vimeo\.com\/(\d+)/)?.[1];
   const video = videoId
-    ? `<div class="ensaio-video"><div class="ensaio-video-player"><iframe src="https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" title="Vídeo: ${escapeAttr(post.title)}" frameborder="0"></iframe></div></div>`
+    ? `<div class="ensaio-video"><div class="ensaio-video-player"><iframe src="https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0&dnt=1" allow="autoplay; fullscreen; picture-in-picture" title="Vídeo: ${escapeAttr(post.title)}" loading="lazy" frameborder="0"></iframe></div></div>`
     : "";
   const nav = prev || next
     ? `<nav class="ensaio-nav">

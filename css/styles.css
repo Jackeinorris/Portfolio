@@ -96,19 +96,6 @@ h1, h2, h3,
   transition: opacity 0.2s ease;
 }
 
-/* --- Versão comparação (trocar pela de cima se preferir) ---
-.nav-links a {
-  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #eae6df;
-  opacity: 0.94;
-  transition: opacity 0.2s ease;
-}
---- */
-
 .nav-links a:hover {
   opacity: 1;
 }
@@ -145,6 +132,7 @@ button:focus-visible {
 .hero {
   position: relative;
   height: 100vh;
+  height: 100svh; /* evita conteúdo cortado pela barra do navegador no mobile */
   width: 100%;
   overflow: hidden;
 }
@@ -158,7 +146,8 @@ button:focus-visible {
 .work-media picture,
 .archive-media picture,
 .project-hero picture,
-.ensaio-cover picture {
+.ensaio-cover picture,
+.ensaio-cover-hero picture {
   display: block;
   width: 100%;
   height: 100%;
@@ -708,6 +697,7 @@ button:focus-visible {
 /* --- 404 page --- */
 .not-found-page {
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
