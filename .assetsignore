@@ -40,3 +40,6 @@ assets/images/perfectly-a-strangeness.jpeg
 assets/images/*.pdf
 assets/images/*.ai
 assets/images/*.docx
+assets/images/*.zip
+assets/images/*.msi
+assets/images/*.mp4
