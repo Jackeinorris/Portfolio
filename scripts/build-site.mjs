@@ -322,6 +322,7 @@ function renderHeader() {
       <ul class="nav-links">
         <li><a href="/#works">Projetos</a></li>
         <li><a href="/ensaios/">Ensaios</a></li>
+        <li class="nav-item-teleprompter"><a href="/teleprompter/">Teleprompter</a></li>
         <li><a href="/about">Sobre</a></li>
         <li><a href="/#contact">Contato</a></li>
       </ul>

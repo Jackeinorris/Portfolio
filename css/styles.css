@@ -1969,3 +1969,93 @@ a.teleprompter-availability:focus-visible {
     gap: 3rem;
   }
 }
+
+/* --- Product strip (home) --- */
+.product-strip {
+  padding: 5rem 2rem 5.5rem;
+  border-top: 1px solid rgba(234, 230, 223, 0.08);
+}
+
+.product-strip-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.product-kicker {
+  margin-bottom: 1rem;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
+.product-strip h2 {
+  max-width: 18ch;
+  margin: 0 auto 1rem;
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  line-height: 1.12;
+}
+
+.product-text {
+  max-width: 52ch;
+  margin: 0 auto 2rem;
+  opacity: 0.68;
+  line-height: 1.75;
+}
+
+.product-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.6rem;
+}
+
+.product-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(234, 230, 223, 0.18);
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: border-color 0.2s ease;
+}
+
+.product-cta:hover,
+.product-cta:focus-visible {
+  border-color: rgba(234, 230, 223, 0.6);
+}
+
+.product-link {
+  border-bottom: 1px solid rgba(234, 230, 223, 0.3);
+  padding-bottom: 2px;
+  font-size: 0.92rem;
+  opacity: 0.8;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.product-link:hover {
+  border-color: #eae6df;
+  opacity: 1;
+}
+
+/* Nav: item Teleprompter oculto no mobile até o retrabalho da nav (Ciclo 3) */
+@media (max-width: 720px) {
+  .nav-item-teleprompter {
+    display: none;
+  }
+
+  .product-strip {
+    padding: 4rem 1.25rem 4.25rem;
+  }
+
+  .product-text {
+    font-size: 0.95rem;
+  }
+}
