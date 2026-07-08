@@ -1855,6 +1855,16 @@ button:focus-visible {
   opacity: 0.78;
 }
 
+a.teleprompter-availability {
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+
+a.teleprompter-availability:hover,
+a.teleprompter-availability:focus-visible {
+  border-color: rgba(234, 230, 223, 0.6);
+}
+
 .teleprompter-content {
   display: flex;
   flex-direction: column;
