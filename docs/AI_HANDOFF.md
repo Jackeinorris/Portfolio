@@ -66,7 +66,7 @@ SEO registration is **centralized** in `TOP_LEVEL_PAGES` (top of `scripts/build-
 ## 7. Components and styling
 
 - **No components.** Header/nav and footer are **duplicated by hand** in every hand-written page (now ~11 files incl. the 2 teleprompter pages) **and** as a template (`renderHeader()`/`renderFooter()`) in the build script for essays. Any nav change touches ~11 files + the template. **Centralization deliberately deferred** until after launch (see §17).
-- **No Teleprompter nav item was added.** The page is reached via an **archive card on the homepage** (`index.html`, `#archive` section, `class="archive-card"` linking `/teleprompter/`) and via the sitemap/direct URL. Nav is still the 4 items: `Projetos /#works · Ensaios /ensaios/ · Sobre /about · Contato /#contact`.
+- **Nav has 5 items since UX Cycle 1 (2026-07-08):** `Projetos · Ensaios · Teleprompter (/teleprompter/) · Sobre · Contato`. The Teleprompter item is `li.nav-item-teleprompter` and is **hidden at ≤720px** (CSS, end of `styles.css`) until the mobile-nav rework (UX Cycle 3 — §18). The homepage has a `#product` "Produto" strip between `#works` and `#archive` (`.product-*` classes) with the Store CTA + link to `/teleprompter/`; the old text-only archive card was removed (Arquivo has 2 cards again).
 - **Single stylesheet** `css/styles.css` (base sections + a `/* --- Teleprompter page --- */` block appended at the end, ~165 lines, using `.teleprompter-*` classes; balanced braces/comments verified). Colors hardcoded, no CSS variables.
 
 ## 8. Assets / public files
@@ -128,16 +128,15 @@ Portfolio + essays + a **product page for Teleprompter JVDias** (free Windows te
 - **E. Store CTA** — app **RELEASED** (`https://apps.microsoft.com/detail/9PMJD1Q6Z6L0`); CTA, "Como baixar", JSON-LD (`downloadUrl`/`installUrl`) and homepage card swapped in `264b7c3`; deployed and verified live (Store URL ×4 in served HTML, zero "Em breve" left, new CSS on edge).
 
 **F. Remaining (all optional, no urgency):**
-- Commit `docs/AI_HANDOFF.md` (this file) — docs-only commit; its diff includes a whole-file line-ending normalization, expected.
-- Cosmetic churn (`ensaios/*.html` + `robots.txt` CRLF-only; `feed.xml` `lastBuildDate`) — discard or commit anytime.
+- **UX backlog — active workstream, see §18** (Cycle 1 done; Cycle 2 = prev/next on project pages is next).
 - Screenshots for the product page (`npm run optimize-image`) — v1 is text-only.
-- Nav item for Teleprompter — still deferred with nav/footer centralization (§17); page is reached via the homepage archive card.
 - English version of product/privacy pages (site is pt-BR).
 - If the official MS badge *image* is ever adopted: CSP `img-src` change or self-host (§13).
+- ~~Cosmetic CRLF churn~~ — absorbed when `npm run build` rewrote the generated files in UX Cycle 1.
 
 ## 16. Open questions
 
-1. Nav item for Teleprompter, or keep the archive-card link only? (Nav item = ~11-file edit; deferred with nav/footer centralization.)
+1. ~~Nav item for Teleprompter?~~ — **RESOLVED 2026-07-08 (UX Cycle 1)**: added to all navs (desktop/tablet; hidden ≤720px until the mobile-nav rework, §18 Cycle 3).
 2. Screenshots for the product page (v1 is text-only)?
 3. English version of the product/privacy pages for the Store listing? (Site is pt-BR.)
 4. ~~Real Microsoft Store URL~~ — **RESOLVED 2026-07-08**: `https://apps.microsoft.com/detail/9PMJD1Q6Z6L0` (CTA live). GitHub Release URL still unknown and not used on the site.
@@ -152,3 +151,18 @@ Portfolio + essays + a **product page for Teleprompter JVDias** (free Windows te
 - **2026-07-08** — Stopped for the day (user credits low) with the `.wrangler` leak fix, the `wrangler.jsonc` commit, and the push still pending (see §15).
 - **2026-07-08 (resume)** — Re-verified repo/prod state (leak still 200). Codex added `.wrangler` to `.assetsignore` + `.gitignore` (diff audited clean, +1 / +3 lines, no other files touched). User redeployed (`npx wrangler deploy`, Version `b5fdf3ab`); **leak CLOSED** — `.../no-op-worker.js(.map)` now 404, `/teleprompter/`, `/teleprompter/privacy`, `/` still 200. User then committed the deploy config (`f5bce28`) and pushed.
 - **2026-07-08 (late)** — **Teleprompter JVDias RELEASED on the Microsoft Store**: `https://apps.microsoft.com/detail/9PMJD1Q6Z6L0`. Site updated (Codex, audited 9/9): masthead CTA → badge-link "Baixar na Microsoft Store", "Como baixar" → available + text link, JSON-LD + `downloadUrl`/`installUrl`, homepage card → "Disponível na Microsoft Store", hover/focus CSS for the badge-link. Clean Store URL (no tracking/locale params); no CSP change needed (outbound link). Committed (`264b7c3`), deployed, pushed, and verified live. Externals done the same day: Partner Center privacy URL set (awaiting certification propagation); orphan worker on `0eeedcff…` deleted. **§15 A–E all closed; only optional polish remains (§15 F).**
+- **2026-07-08 (UX Cycle 1)** — UX audit of the whole site produced the prioritized backlog in §18. Cycle 1 executed (Codex, audited 6/6), deployed, and verified live: homepage `#product` "Produto" strip (between `#works` and `#archive`, `.product-*` CSS block at end of `styles.css`), "Teleprompter" nav item on all 11 hand-written pages + `renderHeader()` (18 occurrences; hidden ≤720px pending Cycle 3), weak text-only archive card removed. `npm run build` re-ran (generated navs updated; old CRLF churn absorbed). User decisions: nav item YES; remove archive card YES.
+
+## 18. UX backlog (2026-07-08 audit — active workstream)
+
+Prioritized findings from a full-site UI/UX review (home, about, project page, ensaios, teleprompter, JS, CSS incl. breakpoints). Work runs in cycles via the §2 pipeline.
+
+| Cycle | Item | Status |
+|---|---|---|
+| 1 | Teleprompter as first-class product: home `#product` strip + nav item + remove archive card | ✅ DONE (2026-07-08, verified live) |
+| 2 | **Prev/next navigation at the end of the 6 `projects/*.html` pages** — they currently dead-end (only a top "← Voltar"); copy the visual pattern of the essays' `ensaio-nav` block (which already exists and works) | NEXT |
+| 3 | Mobile nav rework: touch targets (links have no vertical padding, ~4 cramped uppercase links at 360px), re-show the Teleprompter item (remove the ≤720px `display:none`), + active state (`aria-current="page"`, mechanical per-page edit since nav is hand-duplicated) | pending |
+| 4 | Footer wayfinding: echo nav links (Projetos/Ensaios/Teleprompter) in the footer — same ~11-file churn | pending |
+| — | Minor: consider renaming "Arquivo" section; product-page screenshots (needs user material) | unscheduled |
+
+Notes: essays already have prev/next + reading time (`ensaio-nav`, generated by the build) — the pattern to copy for Cycle 2. If Cycles 3+4 are both greenlit, consider doing the deferred nav/footer centralization (§17, "Option C") first to pay the multi-file churn once.
