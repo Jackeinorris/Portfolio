@@ -2,21 +2,22 @@
 
 ## 1. Freshness warning
 
-This document was generated on **2026-07-07** from a direct inspection of the repository at commit `f580271` ("Code Cleaning", `master`, in sync with `origin/master`). Everything below describes the repo **as of that date**. Before acting on this handoff in a future session, re-verify the repo state (`git status`, `git log -5 --oneline`) — file paths, nav structure, and build-script line references may have drifted.
+This document was generated on **2026-07-07** from a direct inspection of the repository, and last updated the same day after the structural prep described in §6 (repo at commit `b1fe8b8` "Add website AI handoff", `master`, plus **uncommitted** changes to `scripts/build-site.mjs`). Everything below describes the repo **as of that date**. Before acting on this handoff in a future session, re-verify the repo state (`git status`, `git log -5 --oneline`) — file paths, nav structure, and build-script line references may have drifted.
 
 ## 2. Current stage
 
 - The portfolio site is live at **https://jvdiasfilms.com.br**, deployed on Cloudflare Workers static assets.
 - Content is mature: homepage with hero + featured works, about page, 6 hand-written project pages, 5 published essays ("ensaios") + 1 draft, RSS feed, sitemap, structured data, security headers, analytics.
-- **Planned next**: a page for the Teleprompter app (product page) and, later, a privacy policy page. **Neither exists yet** — this handoff is the preparation step; no site code was changed in this session.
+- **Structural prep done (2026-07-07, uncommitted)**: `scripts/build-site.mjs` now has a central `TOP_LEVEL_PAGES` registry that feeds both the sitemap and canonical injection (details in §6). This was the approved "Option B" — small and safe, no nav/footer refactoring.
+- **Planned next**: a page for the Teleprompter app (product page) and its privacy policy page. **Neither exists yet.** The next structural work is **not** nav/footer centralization — it is creating the Teleprompter pages using the central registry.
 
 ## 3. Current repo state
 
-Verified on 2026-07-07:
+Verified on 2026-07-07 (after the structural prep):
 
-- Branch: `master`, up to date with `origin/master` (`https://github.com/Jackeinorris/Portfolio.git`).
-- Working tree: clean except two untracked files — `CLAUDE.md` (project instructions for Claude Code) and `docs/AI_HANDOFF.md` (this document).
-- Recent history: `f580271` Code Cleaning · `a455128` extensionless clean URLs migration · `0b5e5e8` GSC verification file · `290d9ef` security/cache headers, skip link · `4c51780` Cloudflare Web Analytics beacon.
+- Branch: `master`, up to date with `origin/master` (`https://github.com/Jackeinorris/Portfolio.git`); HEAD at `b1fe8b8` "Add website AI handoff".
+- Working tree: **uncommitted** modifications to `scripts/build-site.mjs` (the `TOP_LEVEL_PAGES` prep, see §6) and to this document; `CLAUDE.md` untracked (project instructions for Claude Code); `ensaios/feed.xml` differs only by `lastBuildDate` from the verification build.
+- Recent history: `b1fe8b8` website AI handoff · `f580271` Code Cleaning · `a455128` extensionless clean URLs migration · `0b5e5e8` GSC verification file · `290d9ef` security/cache headers, skip link.
 - No CI/CD configuration (`.github/` does not exist). No lint or test suite.
 
 ## 4. Site architecture summary
@@ -30,7 +31,7 @@ Two categories of pages:
 
 Other moving parts:
 
-- `scripts/build-site.mjs` — the whole build: essay HTML generation, JSON-LD structured data (`Person`/`WebSite`/`BlogPosting`/`CollectionPage`/`ItemList`), sitemap, RSS, robots.txt, canonical injection. `SITE_URL` is hardcoded here (single place to change domain).
+- `scripts/build-site.mjs` — the whole build: essay HTML generation, JSON-LD structured data (`Person`/`WebSite`/`BlogPosting`/`CollectionPage`/`ItemList`), sitemap, RSS, robots.txt, canonical injection. `SITE_URL` is hardcoded here (single place to change domain). Top-level pages are registered in the central `TOP_LEVEL_PAGES` array near the top of the file (see §6).
 - `scripts/serve.mjs` — zero-dependency local static server mimicking Cloudflare's `html_handling` (extensionless URLs).
 - `scripts/optimize-image.mjs` — `sharp`-based image pipeline emitting `.jpg`/`.webp` pairs into `assets/images/optimized/`.
 - `js/main.js` — nav logo reveal on scroll (IntersectionObserver) + lazy Vimeo embed loader (click-to-load iframe).
@@ -46,6 +47,7 @@ Only dependency: `sharp` (devDependency, used by the image script only).
 - `npm run serve` — local preview at `http://localhost:3000` (override with `PORT`), with production-like extensionless routing.
 - `npm run optimize-image -- <input> <output-name> [maxWidth]` — produces `assets/images/optimized/<output-name>.jpg` + `.webp` (default max width 1280, quality 80). Use for **any** new image referenced by a page; never commit heavy originals.
 - Deploy: no npm script — done with **Wrangler** against `wrangler.jsonc` (`npx wrangler deploy` or via the Cloudflare dashboard; no CI pipeline exists).
+- **Environment note (2026-07-07):** Node.js was **not installed** on this machine (no `node`/`npm` on PATH, no standard install found); verification of the registry change used a temporary portable Node v24 in a session scratchpad. Install Node.js (e.g. `winget install OpenJS.NodeJS.LTS`) before running builds locally.
 
 ## 6. Routing / page structure
 
@@ -62,14 +64,15 @@ Routing is **filesystem-based** with clean/extensionless URLs in production (Clo
 
 Internal links always use the clean form (`/about`, `/ensaios/foo`), never `.html`.
 
-SEO registration for pages is **partly manual** in `scripts/build-site.mjs`:
-- Sitemap: `/` and `/about` are hardcoded entries (~line 510); `projects/*.html` are **auto-discovered** from the directory; published essays are added automatically.
-- Canonical injection: hardcoded calls for `index.html`, `about.html`, and a loop over `projects/*.html` (~lines 606–612).
-- **A new top-level page (e.g. `/teleprompter`) is NOT picked up automatically** — it must be added to both the sitemap list and the canonical-injection calls in `build-site.mjs`. A new page under `projects/` would be picked up automatically by both.
+SEO registration for pages is **centralized** in `scripts/build-site.mjs` (structural prep, 2026-07-07):
+- A single **`TOP_LEVEL_PAGES`** array near the top of the script feeds **both** the sitemap (`renderSitemap()`) and the canonical-injection loop at the bottom. Current entries: `index.html` → `/` (priority 1.0), `about.html` → `/about` (0.8), and `/ensaios/` (0.8) as a **sitemap-only entry without `file`** (generated pages embed their own canonical at render time).
+- `projects/*.html` remain **auto-discovered** from the directory (sitemap + canonicals); published essays are added automatically. Neither goes through the registry.
+- **Adding a new top-level page (e.g. `/teleprompter/` and `/teleprompter/privacy`) = one `TOP_LEVEL_PAGES` entry per page.** Commented example entries for both future Teleprompter pages are already in the script. Nothing else to touch for sitemap/canonical.
+- `upsertCanonical()` now **throws (the build fails)** if a registered page lacks the anchor `<meta name="theme-color" content="#0a0a0a">` — the previous silent no-op is gone. Every new hand-written page must include that meta tag. It is still insert-only: an existing (even wrong) canonical is never rewritten.
 
 ## 7. Components and styling
 
-- **There are no components.** Header/nav and footer markup is **duplicated by hand** in every hand-written page, and duplicated once more as a template string inside `scripts/build-site.mjs` (~lines 311–315 for nav, ~330 for footer) for generated essay pages. Any nav change must be replicated in: `index.html`, `about.html`, all 6 `projects/*.html`, `404.html` (check), the build-script template, then `npm run build`.
+- **There are no components.** Header/nav and footer markup is **duplicated by hand** in every hand-written page, and duplicated once more as a template string inside `scripts/build-site.mjs` (`renderHeader()`/`renderFooter()`) for generated essay pages. Any nav change must be replicated in: `index.html`, `about.html`, all 6 `projects/*.html`, `404.html` (check), the build-script template, then `npm run build`. **This duplication remains a separate, known risk — centralizing nav/footer was deliberately deferred until after the Teleprompter launch** (decision 2026-07-07; see §17).
 - Current nav (subpages): `Projetos → /#works` · `Ensaios → /ensaios/` · `Sobre → /about` · `Contato → /#contact` (homepage uses in-page `#` anchors).
 - **Single stylesheet**: `css/styles.css` (~800+ lines, section-commented: reset, header/nav, hero, works, archive, contact, footer, 404, project page, ensaios, about). No CSS variables/custom properties in use; colors are hardcoded.
 - Accessibility touches already present: skip link (`.skip-link` → `#conteudo`), focus states, `aria-label`s.
@@ -102,10 +105,10 @@ SEO registration for pages is **partly manual** in `scripts/build-site.mjs`:
 
 | File / area | Why risky |
 |---|---|
-| `scripts/build-site.mjs` | Generates essays, sitemap, RSS, robots.txt, JSON-LD, canonicals. A bug here breaks SEO/content site-wide. `SITE_URL` hardcoded here. |
+| `scripts/build-site.mjs` | Generates essays, sitemap, RSS, robots.txt, JSON-LD, canonicals. A bug here breaks SEO/content site-wide. `SITE_URL` and the `TOP_LEVEL_PAGES` registry live here. |
 | `_headers` (CSP) | A wrong CSP silently breaks fonts, analytics, or Vimeo in production; not reproduced by the local server. |
 | Generated files (`ensaios/*.html`, `ensaios/feed.xml`, `sitemap.xml`, `robots.txt`) | Hand edits are lost on next `npm run build`. Edit sources instead. |
-| Nav/footer duplication | Markup repeated across ~10 files + the build template; partial edits leave pages inconsistent. |
+| Nav/footer duplication | Markup repeated across ~10 files + the build template; partial edits leave pages inconsistent. Centralization deliberately deferred until after the Teleprompter launch. |
 | `wrangler.jsonc`, `.assetsignore`, `.gitignore` | Control what deploys and what's tracked; mistakes can ship source files or drop assets from production. |
 | `ensaios/post.html` + `js/post-redirect.js` | Legacy URL compatibility; deleting breaks old inbound links. |
 | `googlec051422149ae4b84.html` | Google Search Console verification; do not delete or rename. |
@@ -121,30 +124,33 @@ SEO registration for pages is **partly manual** in `scripts/build-site.mjs`:
 
 The Teleprompter app will be brought in as a product source in a **next step**. Its actual details (name, features, screenshots, store links, copy) will come **from the app's own repository/handoff** — do not invent them. What this site's side of the integration will need (verified against the current codebase):
 
-- A new page — either top-level (e.g. `/teleprompter`, requiring manual additions to the sitemap list and canonical-injection calls in `scripts/build-site.mjs`) or placed to benefit from existing auto-discovery. Decision deferred to the planning session.
-- A nav link (see §7 — must be replicated across all hand-written pages **and** the build-script template).
+- **URL structure approved (2026-07-07):** a `teleprompter/` directory with `index.html` (→ `/teleprompter/`) and `privacy.html` (→ `/teleprompter/privacy`). SEO registration is **one `TOP_LEVEL_PAGES` entry per page** in `scripts/build-site.mjs` — commented example entries are already in place there. Each page must include `<meta name="theme-color" content="#0a0a0a">` (the canonical injection throws without it).
+- A nav link, **if** one is wanted (see §7 — must be replicated across all hand-written pages **and** the build-script template; alternatively link from archive/footer and skip the nav churn).
 - Any screenshots/images must go through `npm run optimize-image`.
 - Any external origins (store badges, app domain) require a CSP update in `_headers`.
 
 ## 14. Future privacy policy page context placeholder
 
-No legal/privacy page or structure exists today. When needed (likely as a requirement for the Teleprompter app's store listing), it would be a new hand-written top-level page following the `about.html` pattern (same header/footer markup, `css/styles.css`), plus manual sitemap + canonical registration in `scripts/build-site.mjs`. Content is pending — do not draft legal text without input from the owner.
+No legal/privacy page exists today, but its slot is decided: `teleprompter/privacy.html` → `/teleprompter/privacy`, a hand-written page following the `about.html` pattern (same header/footer markup, `css/styles.css`, `theme-color` meta), registered with **one `TOP_LEVEL_PAGES` entry** in `scripts/build-site.mjs` (commented example already there). Content is pending — do not draft legal text without input from the owner.
 
 ## 15. Next prompt for Teleprompter page planning
 
 Suggested prompt for the next session (planning only, no implementation):
 
-> Você está no repositório do website JVDias Films. Leia `docs/AI_HANDOFF.md` deste repo e o handoff do app Teleprompter (fornecido em anexo ou no repo do app). Com base nos dois documentos, produza um PLANO para a página do Teleprompter no site — sem implementar nada ainda. O plano deve cobrir: (1) URL e localização do arquivo (top-level vs. `projects/`), considerando o que o build script registra automaticamente; (2) estrutura e seções da página, coerentes com o estilo visual/editorial do site (dark, editorial-minimal, pt-BR); (3) lista exata de arquivos a tocar (página nova, nav em todas as páginas + template do build script, `scripts/build-site.mjs` para sitemap/canonical, `_headers` se houver origens externas, imagens via `npm run optimize-image`); (4) se/quando a página de privacy policy entra; (5) riscos e ordem de execução. Não edite código nesta sessão; apenas apresente o plano para aprovação.
+> Você está no repositório do website JVDias Films. Leia `docs/AI_HANDOFF.md` deste repo e o handoff do app Teleprompter (fornecido em anexo ou no repo do app). Com base nos dois documentos, produza um PLANO para a página do Teleprompter no site — sem implementar nada ainda. A estrutura de URL já está decidida: diretório `teleprompter/` com `index.html` (→ `/teleprompter/`) e `privacy.html` (→ `/teleprompter/privacy`), registrados via entradas no `TOP_LEVEL_PAGES` em `scripts/build-site.mjs` (exemplos comentados já existem lá). O plano deve cobrir: (1) estrutura e seções da página, coerentes com o estilo visual/editorial do site (dark, editorial-minimal, pt-BR); (2) lista exata de arquivos a tocar — páginas novas (com a meta `theme-color` exigida pela injeção de canonical), entradas no `TOP_LEVEL_PAGES`, decisão sobre link no nav (se sim, replicar em todas as páginas manuais + template do build script), `_headers` se houver origens externas, imagens via `npm run optimize-image`; (3) se/quando a privacy policy entra e o que falta de conteúdo; (4) riscos e ordem de execução. Não edite código nesta sessão; apenas apresente o plano para aprovação.
 
 ## 16. Open questions
 
-1. Where should the Teleprompter page live — top-level `/teleprompter` (reads as a product) or `/projects/teleprompter` (reads as portfolio work, gets sitemap/canonical automation for free)?
-2. Should "Teleprompter" get its own nav item, or live under an existing section (e.g. linked from the works archive)?
-3. Will the page need external origins (app store badges, download links, demo video host other than Vimeo)? Each one is a CSP change.
+1. ~~Where should the Teleprompter page live?~~ **Answered 2026-07-07:** `teleprompter/` directory with `index.html` + `privacy.html` (see §13/§17).
+2. Should "Teleprompter" get its own nav item, or live under an existing section (e.g. linked from the works archive)? Nav item = editing ~10 files (see §7).
+3. Will the page need external origins (app store badges, download links, demo video host other than Vimeo)? Each one is a CSP change in `_headers`.
 4. Is the privacy policy scoped to the app only, or should it also cover the website (Cloudflare Analytics is cookieless, but coverage is a legal/owner decision)?
 5. Language: site is pt-BR throughout — will the Teleprompter page (and privacy policy) need an English version for store listings?
-6. Deploy is manual via Wrangler — confirm who runs deploys and whether a CI step is wanted before adding more pages.
+6. Deploy is manual via Wrangler — confirm who runs deploys and whether a CI step is wanted before adding more pages. Note the machine inspected on 2026-07-07 had no Node.js installed (see §5).
 
 ## 17. Decision log
 
 - **2026-07-07** — Handoff document created. Session scope was deliberately analysis-only: no site code, config, CSS, assets, or routes were touched; no commits made. Decision to defer all Teleprompter page details until the app's own handoff is available (avoid inventing product facts).
+- **2026-07-07** — Structural prep ("Option B") implemented in `scripts/build-site.mjs` (uncommitted at time of writing): central `TOP_LEVEL_PAGES` registry feeds both sitemap and canonical injection; `/ensaios/` registered as sitemap-only (no `file`); `upsertCanonical()` now throws when the `theme-color` anchor is missing. Verified: `sitemap.xml` byte-identical after rebuild, `feed.xml` changed only by `lastBuildDate`, local smoke test of `/`, `/about`, `/ensaios/`, one project and one essay all returned 200.
+- **2026-07-07** — Teleprompter URL structure approved: `teleprompter/` directory with `index.html` (→ `/teleprompter/`) and `privacy.html` (→ `/teleprompter/privacy`), avoiding file-vs-directory ambiguity in Cloudflare's `html_handling`.
+- **2026-07-07** — Nav/footer centralization ("Option C") deliberately deferred until after the Teleprompter launch. The next structural work is creating the Teleprompter pages using the central registry, **not** nav/footer refactoring.

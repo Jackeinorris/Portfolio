@@ -13,6 +13,18 @@ const PROFILE_IMAGE = `${SITE_URL}/assets/images/optimized/foto-perfil.jpg`;
 const CF_BEACON = `  <!-- Cloudflare Web Analytics -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5111ddaf126b4d4da730a4847b7031a9"}'></script>`;
 
+// Registro central de páginas top-level: consumido por renderSitemap() e pelo
+// loop de injeção de canonical no fim do script. Entradas sem `file` entram só
+// no sitemap (páginas geradas já embutem o próprio canonical ao renderizar).
+// Futuras (não habilitar antes de os arquivos existirem):
+//   { file: "teleprompter/index.html", loc: "/teleprompter/", priority: "0.8" },
+//   { file: "teleprompter/privacy.html", loc: "/teleprompter/privacy", priority: "0.3" },
+const TOP_LEVEL_PAGES = [
+  { file: "index.html", loc: "/", priority: "1.0" },
+  { file: "about.html", loc: "/about", priority: "0.8" },
+  { loc: "/ensaios/", priority: "0.8" },
+];
+
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const write = (file, text) => fs.writeFileSync(path.join(ROOT, file), text, "utf8");
 const exists = (file) => fs.existsSync(path.join(ROOT, file));
@@ -506,9 +518,7 @@ ${CF_BEACON}
 
 function renderSitemap(posts) {
   const pages = [
-    { loc: "/", priority: "1.0" },
-    { loc: "/about", priority: "0.8" },
-    { loc: "/ensaios/", priority: "0.8" },
+    ...TOP_LEVEL_PAGES,
     ...fs.readdirSync(path.join(ROOT, "projects"))
       .filter((file) => file.endsWith(".html"))
       .sort()
@@ -571,8 +581,12 @@ Sitemap: ${SITE_URL}/sitemap.xml
 function upsertCanonical(file, href) {
   let text = read(file);
   if (text.includes('rel="canonical"')) return;
+  const anchor = '  <meta name="theme-color" content="#0a0a0a">\n';
+  if (!text.includes(anchor)) {
+    throw new Error(`Cannot inject canonical into ${file}: theme-color meta anchor not found.`);
+  }
   const canonical = `  <link rel="canonical" href="${href}">`;
-  text = text.replace(/(  <meta name="theme-color" content="#0a0a0a">\n)/, `$1${canonical}\n`);
+  text = text.replace(anchor, `${anchor}${canonical}\n`);
   write(file, text);
 }
 
@@ -604,8 +618,9 @@ write("sitemap.xml", renderSitemap(published));
 write("ensaios/feed.xml", renderFeed(published));
 write("robots.txt", renderRobots());
 
-upsertCanonical("index.html", `${SITE_URL}/`);
-upsertCanonical("about.html", `${SITE_URL}/about`);
+for (const page of TOP_LEVEL_PAGES) {
+  if (page.file) upsertCanonical(page.file, `${SITE_URL}${page.loc}`);
+}
 
 for (const file of fs.readdirSync(path.join(ROOT, "projects")).filter((name) => name.endsWith(".html"))) {
   upsertCanonical(`projects/${file}`, `${SITE_URL}/projects/${file.replace(/\.html$/, "")}`);
