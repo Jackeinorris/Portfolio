@@ -39,3 +39,6 @@ assets/images/perfectly-a-strangeness.jpeg
 CLAUDE.md
 AGENTS.md
 .codex/
+
+# Wrangler local state and deploy temp files (never commit).
+.wrangler/

@@ -9,6 +9,7 @@ docs/**
 CLAUDE.md
 .codex
 AGENTS.md
+.wrangler
 
 .gitignore
 .assetsignore
