@@ -4,6 +4,12 @@
 .claude
 node_modules
 
+# Internal docs and tooling instructions — never deploy.
+docs/**
+CLAUDE.md
+.codex
+AGENTS.md
+
 .gitignore
 .assetsignore
 package.json

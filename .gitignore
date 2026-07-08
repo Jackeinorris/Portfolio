@@ -34,3 +34,8 @@ assets/images/ZenGarden_Thumb.png
 assets/images/frame-9.png
 assets/images/manha_cinzenta_foto.jpg
 assets/images/perfectly-a-strangeness.jpeg
+
+# Local AI tooling instructions (never commit).
+CLAUDE.md
+AGENTS.md
+.codex/
