@@ -2,155 +2,153 @@
 
 ## 1. Freshness warning
 
-This document was generated on **2026-07-07** from a direct inspection of the repository, and last updated the same day after the structural prep described in §6 (repo at commit `b1fe8b8` "Add website AI handoff", `master`, plus **uncommitted** changes to `scripts/build-site.mjs`). Everything below describes the repo **as of that date**. Before acting on this handoff in a future session, re-verify the repo state (`git status`, `git log -5 --oneline`) — file paths, nav structure, and build-script line references may have drifted.
+Last updated **2026-07-08 (late)**. The **Teleprompter app is RELEASED on the Microsoft Store** (`https://apps.microsoft.com/detail/9PMJD1Q6Z6L0`) and the site CTA links to it — deployed and verified live. `/teleprompter/` and `/teleprompter/privacy` are LIVE; the `.wrangler` leak is CLOSED; all work is committed and pushed (`master` == `origin/master` at `264b7c3`). Before acting on this handoff, re-verify with `git status` / `git log -6 --oneline`. File paths and build-script line references may drift.
 
-## 2. Current stage
+## 2. Working mode (orchestrator pipeline)
 
-- The portfolio site is live at **https://jvdiasfilms.com.br**, deployed on Cloudflare Workers static assets.
-- Content is mature: homepage with hero + featured works, about page, 6 hand-written project pages, 5 published essays ("ensaios") + 1 draft, RSS feed, sitemap, structured data, security headers, analytics.
-- **Structural prep done (2026-07-07, uncommitted)**: `scripts/build-site.mjs` now has a central `TOP_LEVEL_PAGES` registry that feeds both the sitemap and canonical injection (details in §6). This was the approved "Option B" — small and safe, no nav/footer refactoring.
-- **Planned next**: a page for the Teleprompter app (product page) and its privacy policy page. **Neither exists yet.** The next structural work is **not** nav/footer centralization — it is creating the Teleprompter pages using the central registry.
+Since 2026-07-07 the work runs as a multi-agent pipeline — **read this before doing anything**:
 
-## 3. Current repo state
+- **Claude (this assistant)** = key orchestrator: analyzes context, writes implementation **plans** (fixed 10-section format), flags risks, defines order, explains decisions, **and writes the ready-to-paste operational prompt for Codex** each cycle. Claude does **not** edit site code / commit / push unless the user explicitly asks. (Exception in practice: Claude may edit *its own* internal docs like this handoff and the memory, since those are advisory artifacts, not deployed site code.)
+- **Codex** executes file edits in the repo from Claude's prompt; does not commit/push.
+- **User** reviews, commits, pushes, runs `wrangler deploy`, and does external actions (Partner Center, Cloudflare dashboard).
+- After each Codex report, Claude audits it against the plan's acceptance criteria and produces the next prompt.
 
-Verified on 2026-07-07 (after the structural prep):
+## 3. Current repo state (2026-07-08)
 
-- Branch: `master`, up to date with `origin/master` (`https://github.com/Jackeinorris/Portfolio.git`); HEAD at `b1fe8b8` "Add website AI handoff".
-- Working tree: **uncommitted** modifications to `scripts/build-site.mjs` (the `TOP_LEVEL_PAGES` prep, see §6) and to this document; `CLAUDE.md` untracked (project instructions for Claude Code); `ensaios/feed.xml` differs only by `lastBuildDate` from the verification build.
-- Recent history: `b1fe8b8` website AI handoff · `f580271` Code Cleaning · `a455128` extensionless clean URLs migration · `0b5e5e8` GSC verification file · `290d9ef` security/cache headers, skip link.
-- No CI/CD configuration (`.github/` does not exist). No lint or test suite.
+- Branch `master`. Repo: `https://github.com/Jackeinorris/Portfolio.git`.
+- **`master` == `origin/master`** at `264b7c3` "Link Teleprompter CTA to Microsoft Store listing" — everything pushed. Recent: `f5bce28` deploy config + `.wrangler` ignores, `19b82e9` internal docs excluded from bundle, `85a6649` Teleprompter pages.
+- **Uncommitted:** only this handoff (`docs/AI_HANDOFF.md`, advisory doc — safe to commit alone) and cosmetic churn: `ensaios/*.html` + `robots.txt` (CRLF/LF only, empty content diff), `ensaios/feed.xml` (`lastBuildDate` only). The churn can be discarded (`git checkout -- ensaios/ robots.txt`) or committed whenever convenient.
+- **Untracked / gitignored:** `CLAUDE.md`, `AGENTS.md`, `.codex/` are now in `.gitignore` (won't show). `docs/TELEPROMPTER_PRODUCT_BRIEF.md` was committed in `85a6649`.
+- Node.js **is now installed** at `C:\Program Files\nodejs` (Node v24.18.0, npm 11.16.0). A shell opened before install needs the full path prefix.
+- No CI/CD (`.github/` absent). No lint/test suite.
 
 ## 4. Site architecture summary
 
-Static personal portfolio for **J. V. Dias** (filmmaker / visual director), content in **Portuguese (pt-BR)**. **No frontend framework, no bundler.** Hand-written HTML/CSS/vanilla JS, plus a small Node build pipeline that generates the essays section and SEO files.
+Static personal portfolio for **J. V. Dias** (filmmaker / visual director), **pt-BR**. **No framework, no bundler.** Hand-written HTML/CSS/vanilla JS + a small Node build pipeline for the essays section and SEO files.
 
-Two categories of pages:
-
-1. **Hand-written**: `index.html`, `about.html`, `404.html`, `projects/*.html` (6 project pages). Authored directly; the build script only injects/maintains a canonical `<link>` in them.
-2. **Generated** (build output — never hand-edit): `ensaios/index.html`, `ensaios/<slug>.html`, `ensaios/feed.xml`, `sitemap.xml`, `robots.txt`. Source of truth is `ensaios/posts/posts.json` (metadata: title, slug, date, excerpt, coverImage, coverPosition, videoUrl, tags, draft) + `ensaios/posts/<slug>.md` (body, minimal custom Markdown subset — no tables/code blocks).
+Two page categories:
+1. **Hand-written**: `index.html`, `about.html`, `404.html`, `projects/*.html` (6), and now **`teleprompter/index.html`**, **`teleprompter/privacy.html`**. The build only injects/maintains a canonical `<link>` in these.
+2. **Generated** (never hand-edit): `ensaios/index.html`, `ensaios/<slug>.html`, `ensaios/feed.xml`, `sitemap.xml`, `robots.txt`. Source of truth: `ensaios/posts/posts.json` + `ensaios/posts/<slug>.md`.
 
 Other moving parts:
+- `scripts/build-site.mjs` — the whole build: essay HTML, JSON-LD, sitemap, RSS, robots.txt, canonical injection. `SITE_URL` hardcoded here. Top-level pages registered in the `TOP_LEVEL_PAGES` array near the top (see §6).
+- `scripts/serve.mjs` — zero-dependency local server mimicking Cloudflare `html_handling`. **Does NOT apply `_headers`** (no CSP, no cache headers) — so some prod-only behavior isn't reproduced locally (see §9 gotchas).
+- `scripts/optimize-image.mjs` — `sharp` image pipeline → `assets/images/optimized/`.
+- `js/main.js` — nav logo reveal + lazy Vimeo. `js/post-redirect.js` — legacy essay URL redirect.
+- `ensaios/post.html` (legacy shell) and `googlec051422149ae4b84.html` (GSC verification) — keep both.
 
-- `scripts/build-site.mjs` — the whole build: essay HTML generation, JSON-LD structured data (`Person`/`WebSite`/`BlogPosting`/`CollectionPage`/`ItemList`), sitemap, RSS, robots.txt, canonical injection. `SITE_URL` is hardcoded here (single place to change domain). Top-level pages are registered in the central `TOP_LEVEL_PAGES` array near the top of the file (see §6).
-- `scripts/serve.mjs` — zero-dependency local static server mimicking Cloudflare's `html_handling` (extensionless URLs).
-- `scripts/optimize-image.mjs` — `sharp`-based image pipeline emitting `.jpg`/`.webp` pairs into `assets/images/optimized/`.
-- `js/main.js` — nav logo reveal on scroll (IntersectionObserver) + lazy Vimeo embed loader (click-to-load iframe).
-- `js/post-redirect.js` — client-side redirect for legacy `/ensaios/post.html?slug=foo` URLs to clean `/ensaios/foo` (slug validated against `^[a-z0-9-]+$`).
-- `ensaios/post.html` — the legacy shell page that hosts that redirect script; keep it.
-- `googlec051422149ae4b84.html` — Google Search Console verification; keep it.
-
-Only dependency: `sharp` (devDependency, used by the image script only).
+Only dependency: `sharp` (dev).
 
 ## 5. Commands
 
-- `npm run build` — runs `scripts/build-site.mjs`. **Mandatory after editing `ensaios/posts/posts.json` or any `ensaios/posts/*.md`.** Regenerates all generated files listed above.
-- `npm run serve` — local preview at `http://localhost:3000` (override with `PORT`), with production-like extensionless routing.
-- `npm run optimize-image -- <input> <output-name> [maxWidth]` — produces `assets/images/optimized/<output-name>.jpg` + `.webp` (default max width 1280, quality 80). Use for **any** new image referenced by a page; never commit heavy originals.
-- Deploy: no npm script — done with **Wrangler** against `wrangler.jsonc` (`npx wrangler deploy` or via the Cloudflare dashboard; no CI pipeline exists).
-- **Environment note (2026-07-07):** Node.js was **not installed** on this machine (no `node`/`npm` on PATH, no standard install found); verification of the registry change used a temporary portable Node v24 in a session scratchpad. Install Node.js (e.g. `winget install OpenJS.NodeJS.LTS`) before running builds locally.
+- `npm run build` — runs `scripts/build-site.mjs`. **Mandatory after editing `ensaios/posts/*` .** Injects canonicals into registered top-level pages and regenerates all generated files.
+- `npm run serve` — local preview at `http://localhost:3000`.
+- `npm run optimize-image -- <input> <output-name> [maxWidth]` — `.jpg`+`.webp` pair into `assets/images/optimized/`.
+- **Deploy:** `npx wrangler deploy` from repo root (assets-only worker "portfolio"). See §9 for the two-account gotcha and how to verify.
 
 ## 6. Routing / page structure
 
-Routing is **filesystem-based** with clean/extensionless URLs in production (Cloudflare `html_handling`; `serve.mjs` replicates it locally):
+Filesystem-based, clean/extensionless URLs (Cloudflare `html_handling`; `serve.mjs` replicates locally):
 
 | URL | File | Kind |
 |---|---|---|
-| `/` | `index.html` | hand-written (hero, featured works, archive, contact CTA) |
+| `/` | `index.html` | hand-written (hero, works, archive, contact) |
 | `/about` | `about.html` | hand-written |
-| `/projects/<name>` | `projects/<name>.html` | hand-written (6 pages) |
-| `/ensaios/` | `ensaios/index.html` | **generated** |
-| `/ensaios/<slug>` | `ensaios/<slug>.html` | **generated** |
-| anything else | `404.html` | via `not_found_handling: "404-page"` |
+| `/projects/<name>` | `projects/<name>.html` | hand-written (6) |
+| `/teleprompter/` | `teleprompter/index.html` | hand-written **(LIVE)** |
+| `/teleprompter/privacy` | `teleprompter/privacy.html` | hand-written **(LIVE)** |
+| `/ensaios/` , `/ensaios/<slug>` | generated | build output |
+| anything else | `404.html` | `not_found_handling` |
 
-Internal links always use the clean form (`/about`, `/ensaios/foo`), never `.html`.
-
-SEO registration for pages is **centralized** in `scripts/build-site.mjs` (structural prep, 2026-07-07):
-- A single **`TOP_LEVEL_PAGES`** array near the top of the script feeds **both** the sitemap (`renderSitemap()`) and the canonical-injection loop at the bottom. Current entries: `index.html` → `/` (priority 1.0), `about.html` → `/about` (0.8), and `/ensaios/` (0.8) as a **sitemap-only entry without `file`** (generated pages embed their own canonical at render time).
-- `projects/*.html` remain **auto-discovered** from the directory (sitemap + canonicals); published essays are added automatically. Neither goes through the registry.
-- **Adding a new top-level page (e.g. `/teleprompter/` and `/teleprompter/privacy`) = one `TOP_LEVEL_PAGES` entry per page.** Commented example entries for both future Teleprompter pages are already in the script. Nothing else to touch for sitemap/canonical.
-- `upsertCanonical()` now **throws (the build fails)** if a registered page lacks the anchor `<meta name="theme-color" content="#0a0a0a">` — the previous silent no-op is gone. Every new hand-written page must include that meta tag. It is still insert-only: an existing (even wrong) canonical is never rewritten.
+SEO registration is **centralized** in `TOP_LEVEL_PAGES` (top of `scripts/build-site.mjs`), feeding **both** sitemap and canonical injection. Active entries now include `teleprompter/index.html` → `/teleprompter/` (0.8) and `teleprompter/privacy.html` → `/teleprompter/privacy` (0.3). `projects/*.html` stay auto-discovered; essays auto-added.
+**`upsertCanonical()` throws (build fails) if a registered page lacks `<meta name="theme-color" content="#0a0a0a">`.** Every new hand-written page must include that meta tag; do not hand-add a canonical (the build injects it after that meta). Pages in subdirectories must use **absolute** asset paths (`/css/styles.css`, `/assets/...`).
 
 ## 7. Components and styling
 
-- **There are no components.** Header/nav and footer markup is **duplicated by hand** in every hand-written page, and duplicated once more as a template string inside `scripts/build-site.mjs` (`renderHeader()`/`renderFooter()`) for generated essay pages. Any nav change must be replicated in: `index.html`, `about.html`, all 6 `projects/*.html`, `404.html` (check), the build-script template, then `npm run build`. **This duplication remains a separate, known risk — centralizing nav/footer was deliberately deferred until after the Teleprompter launch** (decision 2026-07-07; see §17).
-- Current nav (subpages): `Projetos → /#works` · `Ensaios → /ensaios/` · `Sobre → /about` · `Contato → /#contact` (homepage uses in-page `#` anchors).
-- **Single stylesheet**: `css/styles.css` (~800+ lines, section-commented: reset, header/nav, hero, works, archive, contact, footer, 404, project page, ensaios, about). No CSS variables/custom properties in use; colors are hardcoded.
-- Accessibility touches already present: skip link (`.skip-link` → `#conteudo`), focus states, `aria-label`s.
+- **No components.** Header/nav and footer are **duplicated by hand** in every hand-written page (now ~11 files incl. the 2 teleprompter pages) **and** as a template (`renderHeader()`/`renderFooter()`) in the build script for essays. Any nav change touches ~11 files + the template. **Centralization deliberately deferred** until after launch (see §17).
+- **No Teleprompter nav item was added.** The page is reached via an **archive card on the homepage** (`index.html`, `#archive` section, `class="archive-card"` linking `/teleprompter/`) and via the sitemap/direct URL. Nav is still the 4 items: `Projetos /#works · Ensaios /ensaios/ · Sobre /about · Contato /#contact`.
+- **Single stylesheet** `css/styles.css` (base sections + a `/* --- Teleprompter page --- */` block appended at the end, ~165 lines, using `.teleprompter-*` classes; balanced braces/comments verified). Colors hardcoded, no CSS variables.
 
 ## 8. Assets / public files
 
-- `assets/images/optimized/` — production `.jpg`/`.webp` pairs generated by the optimize script (plus hand-placed `hero-1920.avif/webp`, `og-jvdias.jpg` OG image). Pages reference **these**, not originals.
-- `assets/images/` (root) — a few small committed files: `logo.svg`, `Favicon.png`, `apple-touch-icon.png`, `foto-perfil.jpeg`, `Carlota.jpg`.
-- Heavy source images are excluded from git (`.gitignore`) **and** from the deploy bundle (`.assetsignore`) — local-only. New local-only file categories generally need adding to **both** files.
-- `pictureMarkup()` in the build script emits `<picture>` with a `.webp` source only if a sibling `.webp` exists, and reads PNG/JPEG headers directly to derive `width`/`height`.
+- `assets/images/optimized/` — production `.jpg`/`.webp` pairs. Teleprompter v1 is **text-only** (no screenshots yet); OG image reuses `og-jvdias.jpg`.
+- Heavy originals excluded from git and the deploy bundle. New local-only categories need adding to **both** `.gitignore` and `.assetsignore`.
 
-## 9. Deployment / build notes
+## 9. Deployment / build notes  ← updated 2026-07-08
 
-- **Cloudflare Workers static assets.** `wrangler.jsonc`: worker name `portfolio`, assets directory `.` (the whole repo root), `not_found_handling: "404-page"`, observability enabled.
-- `.assetsignore` keeps source/tooling files (scripts, Markdown sources, configs, unoptimized originals) out of the deployed bundle.
-- `_headers` (consumed by Cloudflare) sets: `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, and a strict **CSP**. Currently allowed third-party origins: Cloudflare Insights (script/connect), Google Fonts (style/font), Vimeo player (frame). Cache-control: `/assets/*` 30 days, `/css/*` and `/js/*` 1 day.
-- **Any page loading a new third-party origin requires a CSP update in `_headers` first**, or the resource will be silently blocked in production.
-- Analytics: Cloudflare Web Analytics beacon on all pages.
-- Deploy appears to be manual (`wrangler deploy`); there is no GitHub Actions or other CI.
+- **Cloudflare Workers static assets**, worker "portfolio", assets dir `.`, `not_found_handling: "404-page"`.
+- **`wrangler.jsonc` now declares custom-domain routes** for `jvdiasfilms.com.br` and `www.jvdiasfilms.com.br` and sets `workers_dev: false` (both hostnames were already served via the dashboard; now in config). **This change is LIVE but not yet committed** (§3).
+- **`.assetsignore`** now also excludes `docs/**`, `CLAUDE.md`, `.codex`, `AGENTS.md` (internal docs/tooling — confirmed `/docs/AI_HANDOFF.md` and `/AGENTS.md` return 404 in prod).
+- `_headers` (Cloudflare): security headers + strict **CSP** (allowed origins: Cloudflare Insights, Google Fonts, Vimeo). Cache-control: `/assets/*` 30d, `/css/*` and `/js/*` **1 day**. Any new third-party origin needs a CSP edit here first.
+
+**Deploy gotchas (all hit on 2026-07-08 — read before deploying):**
+1. **Two Cloudflare accounts.** The production zone is **NOT** on account `0eeedcff1423e88eca16ba400d138322`; that account errored "Could not find zone". (The orphan "portfolio" worker it held was **deleted by the user on 2026-07-08**.) If deploy errors on the zone, `wrangler logout` → `wrangler login` to the account that owns the domain. `wrangler whoami` shows current.
+2. **`.wrangler` temp-file leak — CLOSED (2026-07-08).** Wrangler writes `.wrangler/tmp/deploy-XXXX/no-op-worker.js(.map)` during deploy and the asset scanner used to publish them (was live **200**). Fixed by adding `.wrangler` to `.assetsignore` + `.gitignore` and redeploying; manifest-based sync pruned the leaked files. Verified: `.../no-op-worker.js` and `.js.map` now **404**; `/teleprompter/`, `/teleprompter/privacy`, `/` still **200**. **Keep `.wrangler` in both ignore files** — the temp files regenerate on every deploy.
+3. **CSS cache after a new page.** `/css/*` is cached 1 day and the whole site shares one `styles.css`. After deploying a page with new CSS, **returning visitors keep the old cached stylesheet** → the new page looks unstyled/left-aligned. **Not a bug** — verify in an incognito window (renders fine); hard-refresh (Ctrl+Shift+R). Self-heals in 24h. This is why localhost never shows it (fresh cache, no long cache header from `serve.mjs`). This exact issue was diagnosed and cleared for `/teleprompter/` on 2026-07-08.
 
 ## 10. Visual / editorial style
 
-- **Dark, cinematic, editorial-minimal.** Background `#0a0a0a`, warm off-white text `#eae6df`, generous whitespace, subtle radial/linear gradient overlays on the fixed header.
-- Typography: **Fraunces** (light 300, serif) for h1–h3, **Libre Baskerville** for logo/section titles, **Inter** for UI/labels/buttons, system sans as body fallback. Old-style numerals via `font-feature-settings`. Fonts from Google Fonts.
-- Hero: full-bleed 3D render image (avif/webp/jpg cascade) with an SVG handwritten-style "J. V. Dias" logo overlay.
-- Media: Vimeo embeds are click-to-load (thumbnail first) for performance; `dnt=1` set on the player.
-- Editorial voice: Portuguese, first-person, reflective/essayistic (essays about cinema, directing, 3D, creative process). Titles are lowercase-leaning, poetic. Any new page should match this register — restrained, no marketing-speak.
+Dark, cinematic, editorial-minimal. Background `#0a0a0a`, text `#eae6df`. Fraunces (h1–h3), Libre Baskerville (logo/section titles), Inter (UI). pt-BR, restrained, no marketing-speak. The Teleprompter page follows this register (masthead like the essays, sober badge CTA).
 
 ## 11. High-risk files or areas
 
 | File / area | Why risky |
 |---|---|
-| `scripts/build-site.mjs` | Generates essays, sitemap, RSS, robots.txt, JSON-LD, canonicals. A bug here breaks SEO/content site-wide. `SITE_URL` and the `TOP_LEVEL_PAGES` registry live here. |
-| `_headers` (CSP) | A wrong CSP silently breaks fonts, analytics, or Vimeo in production; not reproduced by the local server. |
-| Generated files (`ensaios/*.html`, `ensaios/feed.xml`, `sitemap.xml`, `robots.txt`) | Hand edits are lost on next `npm run build`. Edit sources instead. |
-| Nav/footer duplication | Markup repeated across ~10 files + the build template; partial edits leave pages inconsistent. Centralization deliberately deferred until after the Teleprompter launch. |
-| `wrangler.jsonc`, `.assetsignore`, `.gitignore` | Control what deploys and what's tracked; mistakes can ship source files or drop assets from production. |
-| `ensaios/post.html` + `js/post-redirect.js` | Legacy URL compatibility; deleting breaks old inbound links. |
-| `googlec051422149ae4b84.html` | Google Search Console verification; do not delete or rename. |
-| `index.html` hero SVG | Large inline SVG paths; easy to corrupt with careless edits. |
+| `scripts/build-site.mjs` | Generates all SEO/essay output; `TOP_LEVEL_PAGES` + `SITE_URL` here. |
+| `_headers` (CSP + cache) | Wrong CSP silently breaks prod (not reproduced locally). 1-day CSS cache causes the "unstyled new page" effect (§9.3). |
+| Generated files | Hand edits lost on `npm run build`. |
+| Nav/footer duplication | ~11 files + build template; partial edits desync pages. |
+| `wrangler.jsonc` / `.assetsignore` / `.gitignore` | Control deploy + tracking. The `.wrangler` leak (§9.2) shows how easily junk ships. |
+| Cloudflare account choice | Deploying from the wrong account fails or pollutes it (§9.1). |
+| `ensaios/post.html`, `js/post-redirect.js`, `googlec051422149ae4b84.html` | Legacy/verification — do not delete. |
 
 ## 12. Current website goals
 
-- Serve as the professional portfolio/presence for J. V. Dias (filmmaker/visual director): showcase projects, publish essays, provide contact.
-- Strong SEO/performance posture already invested in (clean URLs, canonicals, structured data, optimized images, strict CSP) — new work must not regress it.
-- Upcoming expansion: present the **Teleprompter app** as a product (next step), and add a **privacy policy** page (likely required by the app's store listing).
+Portfolio + essays + a **product page for Teleprompter JVDias** (free Windows teleprompter app, **RELEASED on the Microsoft Store**: `https://apps.microsoft.com/detail/9PMJD1Q6Z6L0`). Preserve the strong SEO/perf posture. The Teleprompter launch is done end-to-end (pages, real Store CTA, deploy hygiene); what remains is optional polish only (§15 F).
 
-## 13. Future Teleprompter page context placeholder
+## 13. Teleprompter pages — DONE (was: future placeholder)
 
-The Teleprompter app will be brought in as a product source in a **next step**. Its actual details (name, features, screenshots, store links, copy) will come **from the app's own repository/handoff** — do not invent them. What this site's side of the integration will need (verified against the current codebase):
+- **Built & live:** `/teleprompter/` (masthead + "Para que serve" + recursos + controle pelo celular + privacidade + como baixar + FAQ) and `/teleprompter/privacy`. Content sourced strictly from `docs/TELEPROMPTER_PRODUCT_BRIEF.md`.
+- **CTA links to the real Store listing** (swapped 2026-07-08, commit `264b7c3`): `https://apps.microsoft.com/detail/9PMJD1Q6Z6L0` — clean URL, no tracking/locale params (Store auto-detects). Two links on the page: masthead badge-link "Baixar na Microsoft Store" (`a.teleprompter-availability`, hover/focus rules added at the end of the Teleprompter CSS block) and a `teleprompter-text-link` in "Como baixar". **No CSP change was needed** — an outbound link is a navigation target, not a loaded resource. If the official MS badge *image* is ever adopted, add `get.microsoft.com` to `img-src` in `_headers` or self-host it.
+- JSON-LD `SoftwareApplication` on the product page (price 0, `operatingSystem: Windows`); now includes `downloadUrl` + `installUrl` (both = Store listing URL); no `aggregateRating`.
+- Constraints honored from brief §16 (don't claim: already on Store, has public URL, approved, other platforms).
 
-- **URL structure approved (2026-07-07):** a `teleprompter/` directory with `index.html` (→ `/teleprompter/`) and `privacy.html` (→ `/teleprompter/privacy`). SEO registration is **one `TOP_LEVEL_PAGES` entry per page** in `scripts/build-site.mjs` — commented example entries are already in place there. Each page must include `<meta name="theme-color" content="#0a0a0a">` (the canonical injection throws without it).
-- A nav link, **if** one is wanted (see §7 — must be replicated across all hand-written pages **and** the build-script template; alternatively link from archive/footer and skip the nav churn).
-- Any screenshots/images must go through `npm run optimize-image`.
-- Any external origins (store badges, app domain) require a CSP update in `_headers`.
+## 14. Privacy policy — DONE
 
-## 14. Future privacy policy page context placeholder
+`/teleprompter/privacy` is live, app-scoped, contact `joaodias@jvdias.com`, "Última atualização: 8 de julho de 2026". **Partner Center: DONE (2026-07-08)** — privacy-policy URL set to `https://jvdiasfilms.com.br/teleprompter/privacy`; the Store-listing update propagates automatically once it clears certification.
 
-No legal/privacy page exists today, but its slot is decided: `teleprompter/privacy.html` → `/teleprompter/privacy`, a hand-written page following the `about.html` pattern (same header/footer markup, `css/styles.css`, `theme-color` meta), registered with **one `TOP_LEVEL_PAGES` entry** in `scripts/build-site.mjs` (commented example already there). Content is pending — do not draft legal text without input from the owner.
+## 15. NEXT STEPS (for the next session — start here)
 
-## 15. Next prompt for Teleprompter page planning
+**All of A–E: ✅ DONE (2026-07-08):**
 
-Suggested prompt for the next session (planning only, no implementation):
+- **A. `.wrangler` leak** — `.wrangler` added to `.assetsignore` + `.gitignore`, redeployed; leaked files now 404 (§9.2).
+- **B. Deploy config committed** — `f5bce28` "Declare custom domain routes; exclude .wrangler from deploy and git".
+- **C. Pushed** — `master` == `origin/master`.
+- **D. External** — Partner Center privacy URL set (propagates once the listing update clears certification); orphan worker on account `0eeedcff…` deleted.
+- **E. Store CTA** — app **RELEASED** (`https://apps.microsoft.com/detail/9PMJD1Q6Z6L0`); CTA, "Como baixar", JSON-LD (`downloadUrl`/`installUrl`) and homepage card swapped in `264b7c3`; deployed and verified live (Store URL ×4 in served HTML, zero "Em breve" left, new CSS on edge).
 
-> Você está no repositório do website JVDias Films. Leia `docs/AI_HANDOFF.md` deste repo e o handoff do app Teleprompter (fornecido em anexo ou no repo do app). Com base nos dois documentos, produza um PLANO para a página do Teleprompter no site — sem implementar nada ainda. A estrutura de URL já está decidida: diretório `teleprompter/` com `index.html` (→ `/teleprompter/`) e `privacy.html` (→ `/teleprompter/privacy`), registrados via entradas no `TOP_LEVEL_PAGES` em `scripts/build-site.mjs` (exemplos comentados já existem lá). O plano deve cobrir: (1) estrutura e seções da página, coerentes com o estilo visual/editorial do site (dark, editorial-minimal, pt-BR); (2) lista exata de arquivos a tocar — páginas novas (com a meta `theme-color` exigida pela injeção de canonical), entradas no `TOP_LEVEL_PAGES`, decisão sobre link no nav (se sim, replicar em todas as páginas manuais + template do build script), `_headers` se houver origens externas, imagens via `npm run optimize-image`; (3) se/quando a privacy policy entra e o que falta de conteúdo; (4) riscos e ordem de execução. Não edite código nesta sessão; apenas apresente o plano para aprovação.
+**F. Remaining (all optional, no urgency):**
+- Commit `docs/AI_HANDOFF.md` (this file) — docs-only commit; its diff includes a whole-file line-ending normalization, expected.
+- Cosmetic churn (`ensaios/*.html` + `robots.txt` CRLF-only; `feed.xml` `lastBuildDate`) — discard or commit anytime.
+- Screenshots for the product page (`npm run optimize-image`) — v1 is text-only.
+- Nav item for Teleprompter — still deferred with nav/footer centralization (§17); page is reached via the homepage archive card.
+- English version of product/privacy pages (site is pt-BR).
+- If the official MS badge *image* is ever adopted: CSP `img-src` change or self-host (§13).
 
 ## 16. Open questions
 
-1. ~~Where should the Teleprompter page live?~~ **Answered 2026-07-07:** `teleprompter/` directory with `index.html` + `privacy.html` (see §13/§17).
-2. Should "Teleprompter" get its own nav item, or live under an existing section (e.g. linked from the works archive)? Nav item = editing ~10 files (see §7).
-3. Will the page need external origins (app store badges, download links, demo video host other than Vimeo)? Each one is a CSP change in `_headers`.
-4. Is the privacy policy scoped to the app only, or should it also cover the website (Cloudflare Analytics is cookieless, but coverage is a legal/owner decision)?
-5. Language: site is pt-BR throughout — will the Teleprompter page (and privacy policy) need an English version for store listings?
-6. Deploy is manual via Wrangler — confirm who runs deploys and whether a CI step is wanted before adding more pages. Note the machine inspected on 2026-07-07 had no Node.js installed (see §5).
+1. Nav item for Teleprompter, or keep the archive-card link only? (Nav item = ~11-file edit; deferred with nav/footer centralization.)
+2. Screenshots for the product page (v1 is text-only)?
+3. English version of the product/privacy pages for the Store listing? (Site is pt-BR.)
+4. ~~Real Microsoft Store URL~~ — **RESOLVED 2026-07-08**: `https://apps.microsoft.com/detail/9PMJD1Q6Z6L0` (CTA live). GitHub Release URL still unknown and not used on the site.
 
 ## 17. Decision log
 
-- **2026-07-07** — Handoff document created. Session scope was deliberately analysis-only: no site code, config, CSS, assets, or routes were touched; no commits made. Decision to defer all Teleprompter page details until the app's own handoff is available (avoid inventing product facts).
-- **2026-07-07** — Structural prep ("Option B") implemented in `scripts/build-site.mjs` (uncommitted at time of writing): central `TOP_LEVEL_PAGES` registry feeds both sitemap and canonical injection; `/ensaios/` registered as sitemap-only (no `file`); `upsertCanonical()` now throws when the `theme-color` anchor is missing. Verified: `sitemap.xml` byte-identical after rebuild, `feed.xml` changed only by `lastBuildDate`, local smoke test of `/`, `/about`, `/ensaios/`, one project and one essay all returned 200.
-- **2026-07-07** — Teleprompter URL structure approved: `teleprompter/` directory with `index.html` (→ `/teleprompter/`) and `privacy.html` (→ `/teleprompter/privacy`), avoiding file-vs-directory ambiguity in Cloudflare's `html_handling`.
-- **2026-07-07** — Nav/footer centralization ("Option C") deliberately deferred until after the Teleprompter launch. The next structural work is creating the Teleprompter pages using the central registry, **not** nav/footer refactoring.
+- **2026-07-07** — Handoff created (analysis-only). `TOP_LEVEL_PAGES` structural prep ("Option B") implemented in the build script. Teleprompter URL structure approved (`teleprompter/` dir). Nav/footer centralization ("Option C") deferred until after launch.
+- **2026-07-08** — Teleprompter `/teleprompter/` + `/teleprompter/privacy` built (Codex), verified (9/9 acceptance criteria), committed (`85a6649`), and **deployed live**. Homepage archive card links to the page; no nav item added. CTA is provisional text (no Store URL).
+- **2026-07-08** — Internal docs/tooling excluded from the deploy bundle (`19b82e9`); confirmed `/docs/*` and `/AGENTS.md` now 404 in prod.
+- **2026-07-08** — `wrangler.jsonc` given custom-domain routes + `workers_dev:false` to fix a deploy that failed with no routes; deployed from the **correct** Cloudflare account after the first attempts hit the wrong one (`0eeedcff…`, now holds an orphan worker).
+- **2026-07-08** — Diagnosed a "page looks unstyled in prod" report as **browser CSS cache** (1-day `/css/*` cache serving the pre-Teleprompter stylesheet), not a code bug; cleared via incognito/hard-refresh. Recorded as gotcha §9.3.
+- **2026-07-08** — Stopped for the day (user credits low) with the `.wrangler` leak fix, the `wrangler.jsonc` commit, and the push still pending (see §15).
+- **2026-07-08 (resume)** — Re-verified repo/prod state (leak still 200). Codex added `.wrangler` to `.assetsignore` + `.gitignore` (diff audited clean, +1 / +3 lines, no other files touched). User redeployed (`npx wrangler deploy`, Version `b5fdf3ab`); **leak CLOSED** — `.../no-op-worker.js(.map)` now 404, `/teleprompter/`, `/teleprompter/privacy`, `/` still 200. User then committed the deploy config (`f5bce28`) and pushed.
+- **2026-07-08 (late)** — **Teleprompter JVDias RELEASED on the Microsoft Store**: `https://apps.microsoft.com/detail/9PMJD1Q6Z6L0`. Site updated (Codex, audited 9/9): masthead CTA → badge-link "Baixar na Microsoft Store", "Como baixar" → available + text link, JSON-LD + `downloadUrl`/`installUrl`, homepage card → "Disponível na Microsoft Store", hover/focus CSS for the badge-link. Clean Store URL (no tracking/locale params); no CSP change needed (outbound link). Committed (`264b7c3`), deployed, pushed, and verified live. Externals done the same day: Partner Center privacy URL set (awaiting certification propagation); orphan worker on `0eeedcff…` deleted. **§15 A–E all closed; only optional polish remains (§15 F).**
