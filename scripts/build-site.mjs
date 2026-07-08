@@ -16,13 +16,12 @@ const CF_BEACON = `  <!-- Cloudflare Web Analytics -->
 // Registro central de páginas top-level: consumido por renderSitemap() e pelo
 // loop de injeção de canonical no fim do script. Entradas sem `file` entram só
 // no sitemap (páginas geradas já embutem o próprio canonical ao renderizar).
-// Futuras (não habilitar antes de os arquivos existirem):
-//   { file: "teleprompter/index.html", loc: "/teleprompter/", priority: "0.8" },
-//   { file: "teleprompter/privacy.html", loc: "/teleprompter/privacy", priority: "0.3" },
 const TOP_LEVEL_PAGES = [
   { file: "index.html", loc: "/", priority: "1.0" },
   { file: "about.html", loc: "/about", priority: "0.8" },
   { loc: "/ensaios/", priority: "0.8" },
+  { file: "teleprompter/index.html", loc: "/teleprompter/", priority: "0.8" },
+  { file: "teleprompter/privacy.html", loc: "/teleprompter/privacy", priority: "0.3" },
 ];
 
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");

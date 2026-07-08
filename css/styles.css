@@ -1794,3 +1794,168 @@ button:focus-visible {
   }
 
 }
+
+/* --- Teleprompter page --- */
+.teleprompter-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 8rem 2rem 4rem;
+}
+
+.teleprompter-masthead {
+  margin-bottom: 5rem;
+}
+
+.teleprompter-kicker {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 1rem;
+}
+
+.teleprompter-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2.1rem, 5vw, 4rem);
+  font-weight: 300;
+  line-height: 1.08;
+  margin-bottom: 1rem;
+}
+
+.teleprompter-subtitle {
+  max-width: 62ch;
+  font-family: "Libre Baskerville", Baskerville, Georgia, serif;
+  font-size: 1.08rem;
+  line-height: 1.75;
+  opacity: 0.84;
+  margin-bottom: 1.2rem;
+}
+
+.teleprompter-intro {
+  max-width: 65ch;
+  line-height: 1.7;
+  opacity: 0.78;
+}
+
+.teleprompter-availability {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 2rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(234, 230, 223, 0.18);
+  color: #eae6df;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.teleprompter-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.teleprompter-section {
+  max-width: 65ch;
+}
+
+.teleprompter-section h2 {
+  font-family: "Libre Baskerville", Baskerville, Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 1.2rem;
+}
+
+.teleprompter-section p,
+.teleprompter-feature-list,
+.teleprompter-faq dd {
+  line-height: 1.75;
+  opacity: 0.82;
+}
+
+.teleprompter-feature-list {
+  display: grid;
+  gap: 0.7rem;
+  padding-left: 1.2rem;
+}
+
+.teleprompter-feature-list li::marker {
+  color: rgba(234, 230, 223, 0.45);
+}
+
+.teleprompter-text-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  border-bottom: 1px solid rgba(234, 230, 223, 0.3);
+  padding-bottom: 2px;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.teleprompter-text-link:hover {
+  border-color: #eae6df;
+  opacity: 1;
+}
+
+.teleprompter-faq {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.teleprompter-faq dt {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+
+.teleprompter-faq dd {
+  margin: 0;
+}
+
+.teleprompter-page--privacy .about-content {
+  margin-bottom: 0;
+}
+
+.teleprompter-page--privacy .teleprompter-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.teleprompter-updated {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.56;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .teleprompter-page {
+    padding: 6rem 1.25rem 3rem;
+  }
+
+  .teleprompter-masthead {
+    margin-bottom: 4rem;
+  }
+
+  .teleprompter-title,
+  .teleprompter-page--privacy .teleprompter-title {
+    font-size: 1.8rem;
+  }
+
+  .teleprompter-content {
+    gap: 3rem;
+  }
+}

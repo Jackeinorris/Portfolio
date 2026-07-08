@@ -13,6 +13,14 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://jvdiasfilms.com.br/teleprompter/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jvdiasfilms.com.br/teleprompter/privacy</loc>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://jvdiasfilms.com.br/projects/ana-maria-braga</loc>
     <priority>0.7</priority>
   </url>
