@@ -315,13 +315,14 @@ function pictureMarkup(imagePath, alt, attrs = "") {
           </picture>`;
 }
 
-function renderHeader() {
+function renderHeader(ariaCurrentEnsaios) {
+  const ensaiosCurrent = ariaCurrentEnsaios ? ` aria-current="${ariaCurrentEnsaios}"` : "";
   return `  <header class="site-header">
     <nav class="nav">
       <a href="/" class="logo visible">J. V. Dias</a>
       <ul class="nav-links">
         <li><a href="/#works">Projetos</a></li>
-        <li><a href="/ensaios/">Ensaios</a></li>
+        <li><a href="/ensaios/"${ensaiosCurrent}>Ensaios</a></li>
         <li class="nav-item-teleprompter"><a href="/teleprompter/">Teleprompter</a></li>
         <li><a href="/about">Sobre</a></li>
         <li><a href="/#contact">Contato</a></li>
@@ -396,7 +397,7 @@ function renderEssayIndex(posts) {
 
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-${renderHeader()}
+${renderHeader("page")}
 
   <main class="ensaios-page" id="conteudo">
 
@@ -477,7 +478,7 @@ function renderStaticPost(post, index, published, md) {
 
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-${renderHeader()}
+${renderHeader("true")}
 
   <main class="ensaio-page" id="conteudo">
     <a href="/ensaios/" class="back-link">&larr; Ensaios</a>
