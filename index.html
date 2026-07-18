@@ -72,41 +72,47 @@
     {
       "@type": "ItemList",
       "@id": "https://jvdiasfilms.com.br/#featured-projects",
-      "name": "Projetos Selecionados",
+      "name": "Projetos do portfólio",
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
+          "url": "https://jvdiasfilms.com.br/projects/aprendi-vivendo",
+          "name": "Aprendi Vivendo"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
           "url": "https://jvdiasfilms.com.br/projects/versao-brasileira",
           "name": "Versão Brasileira"
         },
         {
           "@type": "ListItem",
-          "position": 2,
+          "position": 3,
           "url": "https://jvdiasfilms.com.br/projects/coelho-vermelho",
           "name": "Coelho Vermelho"
         },
         {
           "@type": "ListItem",
-          "position": 3,
+          "position": 4,
           "url": "https://jvdiasfilms.com.br/projects/ana-maria-braga",
           "name": "Ana Maria Braga & Frutap"
         },
         {
           "@type": "ListItem",
-          "position": 4,
+          "position": 5,
           "url": "https://jvdiasfilms.com.br/projects/ana-maria-friboi",
           "name": "Ana Maria Braga & Friboi Reserva"
         },
         {
           "@type": "ListItem",
-          "position": 5,
+          "position": 6,
           "url": "https://jvdiasfilms.com.br/projects/vr-zen-garden",
           "name": "VR Zen Garden"
         },
         {
           "@type": "ListItem",
-          "position": 6,
+          "position": 7,
           "url": "https://jvdiasfilms.com.br/projects/breach-the-abyss",
           "name": "Breach the Abyss"
         }
@@ -148,7 +154,7 @@
       <picture>
         <source srcset="assets/images/optimized/hero-1920.avif" type="image/avif">
         <source srcset="assets/images/optimized/hero-1920.webp" type="image/webp">
-        <img src="assets/images/optimized/hero-fallback.jpg" alt="Render 3D — cena nostálgica de um quarto, por J. V. Dias" fetchpriority="high" decoding="async" width="1920" height="1013">
+        <img src="assets/images/optimized/hero-fallback.jpg" alt="Render 3D do trailer de Versão Brasileira — cena nostálgica criada por J. V. Dias" fetchpriority="high" decoding="async" width="1920" height="1013">
       </picture>
     </div>
     <div class="hero-overlay">
@@ -185,6 +191,7 @@
         <a class="hero-action hero-action--primary" href="#works">Ver projetos</a>
         <a class="hero-action hero-action--secondary" href="#contact">Entrar em contato</a>
       </div>
+      <a class="hero-project-credit" href="/projects/versao-brasileira#trailer-3d">Cena do trailer 3D de <span>Versão Brasileira</span> ↗</a>
     </div>
     <div class="scroll-indicator">
       <div class="scroll-line"></div>
@@ -199,20 +206,35 @@
 
     <div class="works-grid">
 
-      <article class="work work--video">
-        <div class="work-media work-lazy" data-vimeo="1182320649">
+      <article class="work">
+        <div class="work-media">
           <picture>
-            <source srcset="assets/images/optimized/versao-thumb.webp" type="image/webp">
-            <img src="assets/images/optimized/versao-thumb.jpg" alt="Versão Brasileira" loading="lazy" decoding="async" width="1200" height="633">
+            <source srcset="assets/images/optimized/aprendi-vivendo-thumb.webp" type="image/webp">
+            <img src="assets/images/optimized/aprendi-vivendo-thumb.jpg" alt="Composição com as cinco artes oficiais da série Aprendi Vivendo, com Ana Maria Braga" loading="lazy" decoding="async" width="1200" height="675">
           </picture>
-          <button class="play-btn" type="button" aria-label="Reproduzir v&iacute;deo: Vers&atilde;o Brasileira">
+        </div>
+        <div class="work-caption">
+          <h3><a href="/projects/aprendi-vivendo" class="work-link">Aprendi Vivendo <span class="work-arrow">&#8599;</span></a></h3>
+          <p class="work-meta">Série documental · 2026 · Assistência geral</p>
+          <p class="work-description">Logística de equipamentos, preparação de set e apoio à produção nos cinco episódios da AMB Digital.</p>
+        </div>
+      </article>
+
+      <article class="work work--video">
+        <div class="work-media work-lazy" data-youtube="f0KqoQbFCDo" data-title="Versão Brasileira: As vozes da nossa infância">
+          <picture>
+            <source srcset="assets/images/optimized/versao-documentario-thumb.webp" type="image/webp">
+            <img src="assets/images/optimized/versao-documentario-thumb.jpg" alt="Carlos Seidl, ator e dublador, em frame do documentário Versão Brasileira: As vozes da nossa infância" loading="lazy" decoding="async" width="1280" height="720">
+          </picture>
+          <button class="play-btn" type="button" aria-label="Assistir ao document&aacute;rio Vers&atilde;o Brasileira: As vozes da nossa inf&acirc;ncia">
             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
           </button>
         </div>
         <div class="work-caption">
           <h3><a href="/projects/versao-brasileira" class="work-link">Versão Brasileira <span class="work-arrow">&#8599;</span></a></h3>
-          <p class="work-meta">Trailer do documentário · 2026</p>
-          <p class="work-description">Direção visual, lighting e pipeline 3D para trailer documental.</p>
+          <p class="work-meta">Documentário · 2026 · Assistência de direção · Direção de fotografia</p>
+          <p class="work-description">Assistente de direção, produtor assistente, operador de câmera e diretor de fotografia em documentário sobre dublagem brasileira.</p>
+          <a class="work-secondary-link" href="/projects/versao-brasileira#trailer-3d">Conhecer o trailer 3D ↗</a>
         </div>
       </article>
 
@@ -220,7 +242,7 @@
         <div class="work-media work-lazy" data-vimeo="1182281611">
           <picture>
             <source srcset="assets/images/optimized/coelho-thumb.webp" type="image/webp">
-            <img src="assets/images/optimized/coelho-thumb.jpg" alt="Coelho Vermelho" loading="lazy" decoding="async" width="1200" height="675">
+            <img src="assets/images/optimized/coelho-thumb.jpg" alt="Pessoa de roupa escura ajustando luvas vermelhas sob o título Coelho Vermelho" loading="lazy" decoding="async" width="1200" height="675">
           </picture>
           <button class="play-btn" type="button" aria-label="Reproduzir v&iacute;deo: Coelho Vermelho">
             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
@@ -228,8 +250,8 @@
         </div>
         <div class="work-caption">
           <h3><a href="/projects/coelho-vermelho" class="work-link">Coelho Vermelho <span class="work-arrow">&#8599;</span></a></h3>
-          <p class="work-meta">Trabalho universitário · 2026</p>
-          <p class="work-description">Câmera, fotografia e luz em curta de suspense atmosférico.</p>
+          <p class="work-meta">Curta-metragem · 2026</p>
+          <p class="work-description">Câmera, direção de fotografia, luz e decupagem em curta de suspense.</p>
         </div>
       </article>
 
@@ -237,7 +259,7 @@
         <div class="work-media work-lazy" data-vimeo="1182454168">
           <picture>
             <source srcset="assets/images/optimized/frutap-thumb.webp" type="image/webp">
-            <img src="assets/images/optimized/frutap-thumb.jpg" alt="Ana Maria Braga & Frutap" style="object-position: center 20%;" loading="lazy" decoding="async" width="900" height="1200">
+            <img src="assets/images/optimized/frutap-thumb.jpg" alt="Ana Maria Braga sentada com dois artistas caracterizados como palhaços durante a gravação" style="object-position: center 20%;" loading="lazy" decoding="async" width="900" height="1200">
           </picture>
           <button class="play-btn" type="button" aria-label="Reproduzir v&iacute;deo: Ana Maria Braga &amp; Frutap">
             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
@@ -246,24 +268,7 @@
         <div class="work-caption">
           <h3><a href="/projects/ana-maria-braga" class="work-link">Ana Maria Braga &amp; Frutap <span class="work-arrow">&#8599;</span></a></h3>
           <p class="work-meta">Branded content · 2025</p>
-          <p class="work-description">Produção, teleponto e pós para conteúdo de marca.</p>
-        </div>
-      </article>
-
-      <article class="work work--video">
-        <div class="work-media work-lazy" data-vimeo="1182456988">
-          <picture>
-            <source srcset="assets/images/optimized/friboi-thumb.webp" type="image/webp">
-            <img src="assets/images/optimized/friboi-thumb.jpg" alt="Ana Maria Braga & Friboi Reserva" style="object-position: center 20%;" loading="lazy" decoding="async" width="900" height="1200">
-          </picture>
-          <button class="play-btn" type="button" aria-label="Reproduzir v&iacute;deo: Ana Maria Braga &amp; Friboi Reserva">
-            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
-          </button>
-        </div>
-        <div class="work-caption">
-          <h3><a href="/projects/ana-maria-friboi" class="work-link">Ana Maria Braga &amp; Friboi Reserva <span class="work-arrow">&#8599;</span></a></h3>
-          <p class="work-meta">Branded content · 2025</p>
-          <p class="work-description">Roteiro, produção, câmera e logística para campanha de marca.</p>
+          <p class="work-description">Assistência de produção, câmera, teleponto e pós para conteúdo de marca.</p>
         </div>
       </article>
 
@@ -288,10 +293,27 @@
     <div class="archive-grid">
 
       <article class="archive-card">
+        <div class="archive-media work-lazy" data-vimeo="1182456988">
+          <picture>
+            <source srcset="assets/images/optimized/friboi-thumb.webp" type="image/webp">
+            <img src="assets/images/optimized/friboi-thumb.jpg" alt="Bastidores da gravação com Ana Maria Braga na cozinha, câmera, teleponto e monitor em primeiro plano" style="object-position: center 20%;" loading="lazy" decoding="async" width="900" height="1200">
+          </picture>
+          <button class="play-btn" type="button" aria-label="Reproduzir v&iacute;deo: Ana Maria Braga &amp; Friboi Reserva">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
+          </button>
+        </div>
+        <div class="archive-caption">
+          <h3><a href="/projects/ana-maria-friboi" class="work-link">Ana Maria Braga &amp; Friboi Reserva <span class="work-arrow">&#8599;</span></a></h3>
+          <p class="archive-meta">Branded content · 2025</p>
+          <p class="archive-description">Estrutura de roteiro, logística e assistência de set para conteúdo de marca.</p>
+        </div>
+      </article>
+
+      <article class="archive-card">
         <div class="archive-media work-lazy" data-vimeo="1182458238">
           <picture>
             <source srcset="assets/images/optimized/zen-thumb.webp" type="image/webp">
-            <img src="assets/images/optimized/zen-thumb.jpg" alt="VR Zen Garden" loading="lazy" decoding="async" width="1200" height="685">
+            <img src="assets/images/optimized/zen-thumb.jpg" alt="Tela do Zen Garden Simulator com personagem ilustrado e jardim virtual ao fundo" loading="lazy" decoding="async" width="1200" height="685">
           </picture>
           <button class="play-btn" type="button" aria-label="Reproduzir v&iacute;deo: VR Zen Garden">
             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
@@ -300,7 +322,7 @@
         <div class="archive-caption">
           <h3><a href="/projects/vr-zen-garden" class="work-link">VR Zen Garden <span class="work-arrow">&#8599;</span></a></h3>
           <p class="archive-meta">Game VR · 2024 · Lead Artist</p>
-          <p class="archive-description">Modelagem, texturas e VFX para experiência interativa em VR.</p>
+          <p class="archive-description">Lead Artist em assets 3D, VFX e pipeline para experiência interativa em VR.</p>
         </div>
       </article>
 
@@ -308,7 +330,7 @@
         <div class="archive-media work-lazy" data-vimeo="1182460343">
           <picture>
             <source srcset="assets/images/optimized/breach-thumb.webp" type="image/webp">
-            <img src="assets/images/optimized/breach-thumb.jpg" alt="Breach the Abyss" loading="lazy" decoding="async" width="1200" height="800">
+            <img src="assets/images/optimized/breach-thumb.jpg" alt="Personagem armado diante de um cenário fantástico ao lado do logotipo Breach the Abyss" loading="lazy" decoding="async" width="1200" height="800">
           </picture>
           <button class="play-btn" type="button" aria-label="Reproduzir v&iacute;deo: Breach the Abyss">
             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
@@ -317,7 +339,7 @@
         <div class="archive-caption">
           <h3><a href="/projects/breach-the-abyss" class="work-link">Breach the Abyss <span class="work-arrow">&#8599;</span></a></h3>
           <p class="archive-meta">Game · 2024 · Producer</p>
-          <p class="archive-description">Produção, marketing e outreach para jogo indie em desenvolvimento.</p>
+          <p class="archive-description">Posicionamento, divulgação e representação em conferências para jogo indie.</p>
         </div>
       </article>
 

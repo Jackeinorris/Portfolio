@@ -45,6 +45,10 @@ assets/images/perfectly-a-strangeness.jpeg
 assets/images/A2_*
 assets/images/Foto Final.png
 
+# Local session scratch and generated deliverables — never deploy.
+tmp/**
+output/**
+
 # Local documents and source artwork
 assets/images/*.pdf
 assets/images/*.ai

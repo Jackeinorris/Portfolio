@@ -44,3 +44,7 @@ AGENTS.md
 
 # Wrangler local state and deploy temp files (never commit).
 .wrangler/
+
+# Local session scratch and generated deliverables (never commit).
+tmp/
+output/
