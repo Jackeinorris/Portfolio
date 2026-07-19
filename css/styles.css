@@ -1022,12 +1022,9 @@ button:focus-visible {
   grid-template-columns: repeat(5, 1fr);
 }
 
-.poster-strip li {
-  background: #141414;
-}
-
 .poster-strip picture {
   display: block;
+  background: #141414;
 }
 
 .poster-strip img {
@@ -1058,9 +1055,13 @@ button:focus-visible {
   }
 
   .poster-strip li {
-    flex: 0 0 62vw;
-    max-width: 260px;
+    flex: 0 0 100%;
     scroll-snap-align: center;
+  }
+
+  .poster-strip picture {
+    width: min(62vw, 260px);
+    margin: 0 auto;
   }
 }
 
