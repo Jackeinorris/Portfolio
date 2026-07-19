@@ -495,7 +495,7 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.5;
+  opacity: 0.65;
   margin-top: 0.25rem;
 }
 
@@ -629,7 +629,7 @@ button:focus-visible {
 }
 
 .archive-card:hover .archive-meta {
-  opacity: 0.64;
+  opacity: 0.8;
 }
 
 .archive-card:hover .archive-description {
@@ -642,7 +642,7 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.45;
+  opacity: 0.65;
   margin-top: 0.15rem;
 }
 
@@ -674,7 +674,7 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.45;
+  opacity: 0.65;
 }
 
 .contact-cta h2 {
@@ -699,13 +699,15 @@ button:focus-visible {
 }
 
 .contact-actions a {
+  display: inline-block;
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   border-bottom: 1px solid rgba(234, 230, 223, 0.3);
-  padding-bottom: 3px;
+  padding: 0.55rem 0.5rem 3px;
+  margin: -0.55rem -0.5rem 0;
   opacity: 0.72;
   transition: opacity 0.2s ease, border-color 0.2s ease;
 }
@@ -746,13 +748,15 @@ button:focus-visible {
 
 .footer-nav a,
 .footer-links a {
+  display: inline-block;
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: 0.06em;
-  opacity: 0.45;
+  opacity: 0.65;
   border-bottom: 1px solid transparent;
-  padding-bottom: 2px;
+  padding: 0.5rem 0.25rem 2px;
+  margin: -0.5rem -0.25rem 0;
   transition: opacity 0.2s ease, border-color 0.2s ease;
 }
 
@@ -786,7 +790,7 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.45;
+  opacity: 0.65;
   margin-bottom: 1.5rem;
 }
 
@@ -813,13 +817,15 @@ button:focus-visible {
 }
 
 .not-found-actions a {
+  display: inline-block;
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   border-bottom: 1px solid rgba(234, 230, 223, 0.3);
-  padding-bottom: 3px;
+  padding: 0.55rem 0.5rem 3px;
+  margin: -0.55rem -0.5rem 0;
   opacity: 0.72;
   transition: opacity 0.2s ease, border-color 0.2s ease;
 }
@@ -1882,7 +1888,7 @@ button:focus-visible {
   }
 
   .hero-action {
-    min-height: 40px;
+    min-height: 44px;
     padding: 0 0.85rem;
     font-size: 0.7rem;
     letter-spacing: 0.1em;
@@ -1962,7 +1968,7 @@ button:focus-visible {
 
   .footer-links {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.15rem;
   }
 
   .footer-nav {
@@ -1972,9 +1978,11 @@ button:focus-visible {
     row-gap: 0;
   }
 
-  .footer-nav a {
+  .footer-nav a,
+  .footer-links a {
     display: inline-block;
     padding: 0.55rem 0.4rem;
+    margin: 0;
   }
 
   .footer-sep {
