@@ -1006,31 +1006,57 @@ button:focus-visible {
 .project-series-strip {
   width: 100%;
   margin: 3.5rem 0;
+}
+
+.poster-strip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.poster-strip li {
   background: #141414;
-  overflow: hidden;
 }
 
-.project-series-strip picture {
+.poster-strip picture {
   display: block;
-  width: 100%;
 }
 
-.project-series-strip img {
+.poster-strip img {
   display: block;
   width: 100%;
   height: auto;
 }
 
 .project-series-strip figcaption {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  margin-top: 0.9rem;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #eae6df;
+  opacity: 0.65;
+}
+
+@media (max-width: 720px) {
+  .poster-strip {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+    padding-bottom: 0.5rem;
+  }
+
+  .poster-strip li {
+    flex: 0 0 62vw;
+    max-width: 260px;
+    scroll-snap-align: center;
+  }
 }
 
 .project-episodes {
