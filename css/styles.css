@@ -1050,18 +1050,14 @@ button:focus-visible {
     scroll-snap-type: x mandatory;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
-    gap: 8px;
+    gap: 18px;
     padding-bottom: 0.5rem;
   }
 
   .poster-strip li {
-    flex: 0 0 100%;
+    flex: 0 0 62vw;
+    max-width: 260px;
     scroll-snap-align: center;
-  }
-
-  .poster-strip picture {
-    width: min(62vw, 260px);
-    margin: 0 auto;
   }
 }
 
