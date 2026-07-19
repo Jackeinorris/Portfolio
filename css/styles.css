@@ -1019,7 +1019,8 @@ button:focus-visible {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  /* proporcional à largura real de cada cartaz para a fileira ter altura única */
+  grid-template-columns: 483fr 481fr 450fr 480fr 482fr;
 }
 
 .poster-strip picture {
