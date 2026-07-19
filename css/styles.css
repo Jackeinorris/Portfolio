@@ -1020,7 +1020,6 @@ button:focus-visible {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
 }
 
 .poster-strip li {
