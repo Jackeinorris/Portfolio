@@ -43,9 +43,7 @@ if (posterStrip) {
   const smallScreen = window.matchMedia("(max-width: 720px)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const ADVANCE_MS = 4000;
-  const RESUME_MS = 8000;
   let timer = null;
-  let resumeTimer = null;
   let stripVisible = false;
 
   const shouldRun = () =>
@@ -65,14 +63,14 @@ if (posterStrip) {
   const start = () => {
     if (!timer && shouldRun()) timer = setInterval(advance, ADVANCE_MS);
   };
-  const pauseThenResume = () => {
+  // Interaction only postpones the next advance; the cycle never stops
+  const restart = () => {
     stop();
-    clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(start, RESUME_MS);
+    start();
   };
 
   ["pointerdown", "touchstart", "wheel"].forEach((type) => {
-    posterStrip.addEventListener(type, pauseThenResume, { passive: true });
+    posterStrip.addEventListener(type, restart, { passive: true });
   });
 
   new IntersectionObserver(
