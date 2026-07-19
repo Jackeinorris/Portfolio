@@ -357,7 +357,7 @@ function renderEssayIndex(posts) {
   const entries = posts.map((post) => {
     const style = post.coverPosition ? `style="object-position: ${escapeAttr(post.coverPosition)};" ` : "";
     const cover = post.coverImage
-      ? `<div class="ensaio-cover">${pictureMarkup(post.coverImage, "", `${style}loading="lazy" decoding="async"`)}</div>`
+      ? `<div class="ensaio-cover">${pictureMarkup(post.coverImage, post.coverAlt || "", `${style}loading="lazy" decoding="async"`)}</div>`
       : "";
 
     return `      <!-- ENSAIO: ${post.slug} -->
@@ -438,7 +438,7 @@ function renderStaticPost(post, index, published, md) {
   const coverPosition = post.coverPosition || "center";
   const coverAttrs = `style="object-position: ${escapeAttr(coverPosition)};" decoding="async"`;
   const cover = post.coverImage
-    ? `<div class="ensaio-cover-hero">${pictureMarkup(post.coverImage, post.title, coverAttrs)}</div>`
+    ? `<div class="ensaio-cover-hero">${pictureMarkup(post.coverImage, post.coverAlt || "", coverAttrs)}</div>`
     : "";
   const tags = post.tags?.length
     ? `<div class="ensaio-tags">${post.tags.map((tag) => `<span class="ensaio-tag">${escapeHtml(tag)}</span>`).join("")}</div>`

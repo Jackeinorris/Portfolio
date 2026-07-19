@@ -5,6 +5,7 @@
     "date": "2026-06-09",
     "excerpt": "Marco inaugural da Retomada, o filme de Carla Camurati reconta a vinda da família real ao Brasil como farsa declarada — e reabre a pergunta sobre o que o cinema deve, de fato, à História.",
     "coverImage": "../assets/images/optimized/carlota-thumb.jpg",
+    "coverAlt": "Carlota Joaquina, de turbante e vestido vermelhos, segura um leque diante de um mar pintado, com um navio adernando entre icebergs ao fundo.",
     "coverPosition": "60% center",
     "videoUrl": "",
     "tags": [
@@ -20,6 +21,7 @@
     "date": "2026-04-19",
     "excerpt": "Em The Drama, Kristoffer Borgli transforma uma crise afetiva em comédia incômoda, mas a ambição tonal do filme nem sempre encontra unidade entre romance, tensão e colapso emocional.",
     "coverImage": "../assets/images/optimized/the-drama-thumb.jpg",
+    "coverAlt": "Zendaya, de véu de noiva e jaqueta laranja, segura um buquê ao lado de Robert Pattinson, com o rosto machucado, contra um fundo azul.",
     "coverPosition": "center 20%",
     "videoUrl": "",
     "tags": [
@@ -35,6 +37,7 @@
     "date": "2026-04-13",
     "excerpt": "Em Manhã Cinzenta, Olney São Paulo transforma a repressão política em linguagem cinematográfica. O curta articula alegoria, fragmentação e urgência formal para fazer o espectador sentir o sufocamento de viver sob a ditadura.",
     "coverImage": "../assets/images/optimized/manha-cinzenta-thumb.jpg",
+    "coverAlt": "Fotograma em preto e branco: uma mulher sentada ao centro de uma sala branca é cercada por guardas uniformizados, sob uma bandeira com símbolo circular.",
     "videoUrl": "",
     "tags": [
       "cinema",
@@ -49,6 +52,7 @@
     "date": "2026-04-06",
     "excerpt": "Em Perfectly a Strangeness, Alison McAlpine transforma o deserto em campo de tensão entre matéria, percepção e imaginação cósmica.",
     "coverImage": "../assets/images/optimized/perfectly-thumb.jpg",
+    "coverAlt": "Três burros sobem uma estrada deserta de montanha ladeada por observatórios astronômicos, com um espelho convexo de trânsito em primeiro plano.",
     "coverPosition": "center",
     "videoUrl": "",
     "tags": [
@@ -64,6 +68,7 @@
     "date": "2026-03-30",
     "excerpt": "Em Taste, Lê Bảo organiza a experiência menos pela progressão narrativa do que pela observação dos corpos, do espaço e da repetição.",
     "coverImage": "../assets/images/optimized/taste-thumb.jpg",
+    "coverAlt": "Homem agachado no topo de uma balança segura um porco no colo, observado por duas mulheres numa sala de concreto nu.",
     "coverPosition": "center 1%",
     "videoUrl": "",
     "tags": [
