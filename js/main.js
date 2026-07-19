@@ -32,6 +32,9 @@ function loadVideo(el) {
   iframe.focus();
 }
 
+// O gatilho semântico/de teclado é o <button class="play-btn"> interno (dispara
+// este listener por bubbling); o clique no contêiner é conveniência de mouse.
+// Não adicionar tabindex/role aqui — criaria parada de tab duplicada. (A10)
 document.querySelectorAll(".work-lazy").forEach((el) => {
   el.addEventListener("click", () => loadVideo(el));
 });
