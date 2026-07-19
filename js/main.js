@@ -36,6 +36,60 @@ document.querySelectorAll(".work-lazy").forEach((el) => {
   el.addEventListener("click", () => loadVideo(el));
 });
 
+// Auto-advance the poster carousel on small screens so it reads as a carousel
+const posterStrip = document.querySelector(".poster-strip");
+if (posterStrip) {
+  const slides = posterStrip.querySelectorAll("li");
+  const smallScreen = window.matchMedia("(max-width: 720px)");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const ADVANCE_MS = 4000;
+  const RESUME_MS = 8000;
+  let timer = null;
+  let resumeTimer = null;
+  let stripVisible = false;
+
+  const shouldRun = () =>
+    stripVisible && smallScreen.matches && !reduceMotion.matches && slides.length > 1;
+
+  const advance = () => {
+    const width = posterStrip.clientWidth;
+    if (!width) return;
+    const next = (Math.round(posterStrip.scrollLeft / width) + 1) % slides.length;
+    posterStrip.scrollTo({ left: next * width, behavior: "smooth" });
+  };
+
+  const stop = () => {
+    clearInterval(timer);
+    timer = null;
+  };
+  const start = () => {
+    if (!timer && shouldRun()) timer = setInterval(advance, ADVANCE_MS);
+  };
+  const pauseThenResume = () => {
+    stop();
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(start, RESUME_MS);
+  };
+
+  ["pointerdown", "touchstart", "wheel"].forEach((type) => {
+    posterStrip.addEventListener(type, pauseThenResume, { passive: true });
+  });
+
+  new IntersectionObserver(
+    ([entry]) => {
+      stripVisible = entry.isIntersecting;
+      if (stripVisible) start();
+      else stop();
+    },
+    { threshold: 0.4 }
+  ).observe(posterStrip);
+
+  smallScreen.addEventListener("change", () => {
+    if (smallScreen.matches) start();
+    else stop();
+  });
+}
+
 // "Assistir projeto" button on project pages
 document.querySelectorAll("[data-play-video]").forEach((link) => {
   link.addEventListener("click", (event) => {

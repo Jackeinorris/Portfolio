@@ -1060,8 +1060,14 @@ button:focus-visible {
   }
 
   .poster-strip picture {
-    width: min(80vw, 320px);
+    width: fit-content;
     margin: 0 auto;
+  }
+
+  /* altura comum: 80vw de largura no cartaz mais largo (483/864 ≈ 143vw de altura) */
+  .poster-strip img {
+    width: auto;
+    height: min(143vw, 574px);
   }
 }
 
