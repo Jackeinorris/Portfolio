@@ -2,11 +2,13 @@
 
 ## Estado atual
 
-Atualizado em **18 de julho de 2026**.
+Atualizado em **19 de julho de 2026**.
 
 O portfólio está publicado em [jvdiasfilms.com.br](https://jvdiasfilms.com.br), hospedado como site estático no Cloudflare Workers. A atualização de trabalhos de julho de 2026 está no ar, incluindo as páginas de **Aprendi Vivendo** e **Versão Brasileira**. Não há freeze de atualização ativo.
 
-Antes de começar qualquer trabalho, confira `git status` e `git log --oneline -6`. Depois do commit que acompanha este handoff, o estado esperado é uma árvore limpa em `master`.
+Em 2026-07-19 foram commitados três ciclos de correção derivados da auditoria frontend de 2026-07-18 (`docs/FRONTEND_AUDIT_2026-07-18.md`, relatório da Kimi auditado pelo Claude): galeria de cartazes individuais no Aprendi Vivendo (A1), contraste AA + alvos de toque (A2/A3) e redirect legado de ensaios + labels de players (A5/A7 parcial). **Push e `wrangler deploy` pendentes com o usuário.** Ao publicar, lembrar do cache de 1 dia de `/css/*` (a página do Aprendi Vivendo já teve a query de versão do CSS atualizada para `?v=20260719-1`; as demais se curam em 24h).
+
+Antes de começar qualquer trabalho, confira `git status` e `git log --oneline -6`.
 
 ## Conteúdo publicado recentemente
 
@@ -64,6 +66,7 @@ Preserve `alt` nas imagens, `aria-current` na navegação de cabeçalho e `prefe
 ## Próximos passos possíveis
 
 - Criar e adicionar um showreel quando houver material finalizado.
-- Avaliar uma galeria horizontal de cartazes individuais para `Aprendi Vivendo` em telas pequenas; a faixa atual está proporcional e sem overflow, mas os cinco cartazes ficam naturalmente pequenos no celular.
 - Adicionar screenshots do Teleprompter JVDias quando houver imagens prontas.
 - Atualizar currículo e páginas de projeto quando entrarem novos créditos verificáveis.
+- Itens remanescentes da auditoria frontend (`docs/FRONTEND_AUDIT_2026-07-18.md`), todos de baixa prioridade: A4 (grão fílmico — **medir com profiler antes de otimizar**), A8 (revisão de microcopy/capitalização), A9 (regra de `alt` das capas no template de build dos ensaios), A10 (affordance de teclado dos players) e as "observações menores" do relatório.
+- Decisões registradas da auditoria: **A6 rejeitado** — o esquema `aria-current` (`"page"` página exata / `"true"` seção) é deliberado e correto, não padronizar; a troca da seta `→`→`↗` no CTA da Store em `/teleprompter/` foi **recusada pelo usuário** (link mantém `→`).
