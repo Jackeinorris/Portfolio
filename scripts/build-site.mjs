@@ -77,11 +77,24 @@ function escapeAttr(value) {
   return escapeHtml(value);
 }
 
-function inlineMarkdown(value) {
+function inlineEmphasis(value) {
   let out = escapeHtml(value);
   out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   out = out.replace(/\*([^*]+)\*/g, "<em>$1</em>");
   return out;
+}
+
+function inlineMarkdown(value) {
+  // Parse links before formatting so emphasis cannot alter URL attributes.
+  const links = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
+  let output = "";
+  let cursor = 0;
+  for (const match of value.matchAll(links)) {
+    output += inlineEmphasis(value.slice(cursor, match.index));
+    output += `<a href="${escapeAttr(match[2])}">${inlineEmphasis(match[1])}</a>`;
+    cursor = match.index + match[0].length;
+  }
+  return output + inlineEmphasis(value.slice(cursor));
 }
 
 function renderMarkdown(md) {

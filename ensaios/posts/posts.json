@@ -1,5 +1,21 @@
 [
   {
+    "title": "O que separa um videoclipe de um filme?",
+    "slug": "o-que-separa-um-videoclipe-de-um-filme",
+    "date": "2026-09-10",
+    "excerpt": "A partir do videoclipe, do cinema e dos videogames, uma reflexão sobre como música, movimento e participação afetiva organizam diferentes experiências audiovisuais.",
+    "coverImage": "../assets/images/optimized/kpop-demon-hunters-thumb.jpg",
+    "coverAlt": "Três protagonistas de KPop Demon Hunters em figurinos de palco, iluminadas por luzes rosas, roxas e azuis.",
+    "coverPosition": "center 35%",
+    "videoUrl": "",
+    "tags": [
+      "cinema",
+      "videoclipe",
+      "videogames"
+    ],
+    "draft": false
+  },
+  {
     "title": "Carlota Joaquina: farsa, caricatura e a dívida com a História",
     "slug": "carlota-joaquina-farsa-caricatura-e-a-divida-com-a-historia",
     "date": "2026-06-09",

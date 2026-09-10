@@ -53,6 +53,19 @@ function fixture(t) {
   return { posts, save, build, read, write, exists, snapshot };
 }
 
+test("renders reference links with emphasis and escaped attributes in HTML and RSS", (t) => {
+  const f = fixture(t);
+  f.write("ensaios/posts/first.md", 'Before [*Film*](https://example.com/watch?a=1&b=2) after.\n\n[Unsafe](javascript:alert) <script>alert(1)</script>\n\n[Label](https://example.com/"quoted")');
+  f.build();
+  for (const file of ["ensaios/first.html", "ensaios/feed.xml"]) {
+    const html = f.read(file);
+    assert.ok(html.includes('Before <a href="https://example.com/watch?a=1&amp;b=2"><em>Film</em></a> after.'));
+    assert.ok(html.includes('href="https://example.com/&quot;quoted&quot;"'));
+    assert.ok(html.includes('&lt;script&gt;alert(1)&lt;/script&gt;'));
+    assert.ok(!html.includes('href="javascript:'));
+  }
+});
+
 test("updates stale canonical, removes duplicates, inserts missing tags, and is idempotent", (t) => {
   const f = fixture(t);
   f.write("index.html", page.replace("</head>", '<link href="https://old.example/" REL=\'canonical\'>\n<link rel="canonical" href="https://duplicate.example/">\n<link rel="stylesheet" href="/css/styles.css">\n</head>'));
