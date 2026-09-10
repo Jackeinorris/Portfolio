@@ -7,6 +7,10 @@
   padding: 0;
 }
 
+:root {
+  --text-secondary: #aaa59d;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -269,7 +273,7 @@ button:focus-visible {
 }
 
 .hero-project-credit {
-  display: inline-flex;
+  display: block;
   width: fit-content;
   margin-top: 0.85rem;
   padding-bottom: 2px;
@@ -280,12 +284,11 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.58;
+  opacity: 0.9;
   transition: opacity 0.2s ease, border-color 0.2s ease;
 }
 
 .hero-project-credit span {
-  margin-left: 0.3em;
   font-style: italic;
 }
 
@@ -489,7 +492,7 @@ button:focus-visible {
   opacity: 0.86;
 }
 
-.work-caption p {
+.work-meta {
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 500;
@@ -506,14 +509,16 @@ button:focus-visible {
 
 .work-description,
 .archive-description {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   max-width: 46ch;
-  color: #eae6df;
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.55;
   text-transform: none;
-  opacity: 0.66;
+  opacity: 1;
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
 }
 
 .work-secondary-link {
@@ -636,7 +641,7 @@ button:focus-visible {
   opacity: 0.82;
 }
 
-.archive-caption p {
+.archive-meta {
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.75rem;
   font-weight: 500;
@@ -1028,6 +1033,10 @@ button:focus-visible {
   background: #141414;
 }
 
+.poster-controls {
+  display: none;
+}
+
 .poster-strip img {
   display: block;
   width: 100%;
@@ -1052,6 +1061,31 @@ button:focus-visible {
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 0.5rem;
+  }
+
+  .poster-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .poster-controls button {
+    min-height: 44px;
+    padding: 0.5rem;
+    border: 1px solid #68645e;
+    background: #141414;
+    color: #eae6df;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .poster-controls button:hover {
+    background: #262626;
   }
 
   .poster-strip li {
@@ -1111,7 +1145,8 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.52;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 .episode-copy {
@@ -1158,7 +1193,8 @@ button:focus-visible {
   font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  opacity: 0.58;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 .detail-value {
@@ -1233,7 +1269,8 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.55;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 .about-content {
@@ -1255,8 +1292,9 @@ button:focus-visible {
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  opacity: 0.5;
+  opacity: 1;
   margin-bottom: 1.5rem;
+  color: var(--text-secondary);
 }
 
 .about-statement {
@@ -1291,7 +1329,8 @@ button:focus-visible {
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
-  opacity: 0.55;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 .about-entry-year {
@@ -1299,8 +1338,9 @@ button:focus-visible {
   font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.08em;
-  opacity: 0.4;
+  opacity: 1;
   flex-shrink: 0;
+  color: var(--text-secondary);
 }
 
 .about-role {
@@ -1348,8 +1388,9 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.5;
+  opacity: 1;
   margin-bottom: 0.6rem;
+  color: var(--text-secondary);
 }
 
 .about-skill-group p {
@@ -1401,9 +1442,10 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.45;
+  opacity: 1;
   display: block;
   margin-bottom: 1.5rem;
+  color: var(--text-secondary);
 }
 
 .ensaios-masthead .ensaios-subtitle {
@@ -1423,8 +1465,9 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.4;
+  opacity: 1;
   margin-bottom: 4rem;
+  color: var(--text-secondary);
 }
 
 .ensaio-list {
@@ -1436,15 +1479,15 @@ button:focus-visible {
   display: block;
   padding: 2.5rem 0;
   border-bottom: 1px solid rgba(234, 230, 223, 0.08);
-  transition: opacity 0.2s ease;
 }
 
 .ensaio-entry:first-child {
   border-top: 1px solid rgba(234, 230, 223, 0.08);
 }
 
-.ensaio-entry:hover {
-  opacity: 0.75;
+.ensaio-entry:hover .ensaio-entry-title {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .ensaio-entry-content {
@@ -1457,9 +1500,10 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.35;
+  opacity: 1;
   display: block;
   margin-bottom: 0.6rem;
+  color: var(--text-secondary);
 }
 
 .ensaio-entry-title {
@@ -1491,8 +1535,8 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.55;
-  color: #eae6df;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 .ensaio-meta .ensaio-tag + .ensaio-tag,
@@ -1591,10 +1635,11 @@ button:focus-visible {
   font-size: 0.78rem;
   font-weight: 500;
   letter-spacing: 0.06em;
-  opacity: 0.4;
+  opacity: 1;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: var(--text-secondary);
 }
 
 .ensaio-info-sep {
@@ -1733,7 +1778,8 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.42;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 /* --- Ensaio tags --- */
@@ -1777,7 +1823,8 @@ button:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.4;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 .ensaio-nav-title {
@@ -1858,19 +1905,27 @@ button:focus-visible {
   .nav-links {
     flex-wrap: wrap;
     justify-content: center;
-    column-gap: 0.4rem;
+    max-width: 18rem;
+    column-gap: 0.1rem;
     row-gap: 0;
   }
 
   .nav-links a {
     display: inline-block;
     font-size: 0.8rem;
-    padding: 0.7rem 0.5rem;
+    letter-spacing: 0.02em;
+    min-height: 44px;
+    padding: 0.7rem 0.35rem;
   }
 
   /* --- Hero --- */
+  .hero {
+    min-height: 40rem;
+  }
+
   .hero-overlay {
-    padding: 0 1.25rem 0.5rem;
+    padding: 9rem 1.25rem 1.5rem;
+    background: linear-gradient(to top, rgba(10,10,10,0.92), rgba(10,10,10,0.5) 40%, transparent 75%);
   }
 
   .hero-logo {
@@ -1903,13 +1958,12 @@ button:focus-visible {
   .hero-project-credit {
     max-width: 34ch;
     margin-top: 0.65rem;
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     line-height: 1.45;
   }
 
   .scroll-indicator {
-    right: 1.25rem;
-    bottom: 1.5rem;
+    display: none;
   }
 
   /* --- Works --- */
@@ -1934,7 +1988,7 @@ button:focus-visible {
   .work-description,
   .archive-description {
     max-width: 100%;
-    font-size: 0.88rem;
+    font-size: 1rem;
   }
 
   /* --- Archive --- */
@@ -2414,7 +2468,8 @@ a.teleprompter-availability:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.4;
+  opacity: 1;
+  color: var(--text-secondary);
 }
 
 .project-nav-title {

@@ -8,6 +8,7 @@ node_modules
 docs/**
 CLAUDE.md
 .codex
+.agents
 AGENTS.md
 .wrangler
 

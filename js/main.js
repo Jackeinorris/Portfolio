@@ -39,56 +39,45 @@ document.querySelectorAll(".work-lazy").forEach((el) => {
   el.addEventListener("click", () => loadVideo(el));
 });
 
-// Auto-advance the poster carousel on small screens so it reads as a carousel
+// Manual poster navigation; swipe remains available without JavaScript controls.
 const posterStrip = document.querySelector(".poster-strip");
 if (posterStrip) {
   const slides = posterStrip.querySelectorAll("li");
-  const smallScreen = window.matchMedia("(max-width: 720px)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const ADVANCE_MS = 4000;
-  let timer = null;
-  let stripVisible = false;
+  const controls = document.createElement("div");
+  controls.className = "poster-controls";
+  const previous = document.createElement("button");
+  const next = document.createElement("button");
+  const status = document.createElement("span");
+  previous.type = next.type = "button";
+  previous.textContent = "← Anterior";
+  next.textContent = "Próximo →";
+  previous.setAttribute("aria-label", "Cartaz anterior");
+  next.setAttribute("aria-label", "Próximo cartaz");
+  previous.setAttribute("aria-controls", posterStrip.id);
+  next.setAttribute("aria-controls", posterStrip.id);
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-atomic", "true");
+  controls.append(previous, status, next);
+  if (slides.length > 1) posterStrip.after(controls);
 
-  const shouldRun = () =>
-    stripVisible && smallScreen.matches && !reduceMotion.matches && slides.length > 1;
-
-  const advance = () => {
-    const width = posterStrip.clientWidth;
-    if (!width) return;
-    const next = (Math.round(posterStrip.scrollLeft / width) + 1) % slides.length;
-    posterStrip.scrollTo({ left: next * width, behavior: "smooth" });
+  const currentIndex = () => Math.round(posterStrip.scrollLeft / (posterStrip.clientWidth || 1));
+  const updateStatus = () => {
+    const text = `Cartaz ${currentIndex() + 1} de ${slides.length}`;
+    if (status.textContent !== text) status.textContent = text;
   };
-
-  const stop = () => {
-    clearInterval(timer);
-    timer = null;
+  const move = (direction) => {
+    const index = (currentIndex() + direction + slides.length) % slides.length;
+    posterStrip.scrollTo({
+      left: index * posterStrip.clientWidth,
+      behavior: reduceMotion.matches ? "instant" : "smooth",
+    });
   };
-  const start = () => {
-    if (!timer && shouldRun()) timer = setInterval(advance, ADVANCE_MS);
-  };
-  // Interaction only postpones the next advance; the cycle never stops
-  const restart = () => {
-    stop();
-    start();
-  };
-
-  ["pointerdown", "touchstart", "wheel"].forEach((type) => {
-    posterStrip.addEventListener(type, restart, { passive: true });
-  });
-
-  new IntersectionObserver(
-    ([entry]) => {
-      stripVisible = entry.isIntersecting;
-      if (stripVisible) start();
-      else stop();
-    },
-    { threshold: 0.4 }
-  ).observe(posterStrip);
-
-  smallScreen.addEventListener("change", () => {
-    if (smallScreen.matches) start();
-    else stop();
-  });
+  previous.addEventListener("click", () => move(-1));
+  next.addEventListener("click", () => move(1));
+  posterStrip.addEventListener("scroll", updateStatus, { passive: true });
+  window.addEventListener("resize", updateStatus);
+  updateStatus();
 }
 
 // "Assistir projeto" button on project pages

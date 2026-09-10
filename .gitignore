@@ -41,6 +41,7 @@ assets/images/Foto Final.png
 CLAUDE.md
 AGENTS.md
 .codex/
+.agents/
 
 # Wrangler local state and deploy temp files (never commit).
 .wrangler/
