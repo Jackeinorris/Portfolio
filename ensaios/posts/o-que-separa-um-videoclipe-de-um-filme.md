@@ -12,7 +12,7 @@ Também há uma dimensão de identificação. Figurinos, gestos, cenários e per
 
 No caso do BTS, um exemplo específico é [*ON: Kinetic Manifesto Film: Come Prima*](https://www.youtube.com/watch?v=gwMa6gpoE9I). A coreografia e sua relação com a música permitem observar como o movimento dos corpos participa da força expressiva de um clipe. Podemos analisar essa performance sem reduzir a experiência do público à compra de produtos.
 
-É a partir do envolvimento sensorial que proponho a aproximação com os videogames.
+## É a partir do envolvimento sensorial que proponho a aproximação com os videogames.
 
 Na leitura de John Fiske apresentada por Holzbach, os dois formatos são aproximados pela mudança rápida dos estímulos e pela resposta corporal do público. O prazer ocupa um lugar importante nessa interpretação. Há também uma tensão: os produtos podem capturar comercialmente a atenção e, ao mesmo tempo, abrir possibilidades de apropriação e resistência por parte de quem os consome.
 
