@@ -1,5 +1,21 @@
 [
   {
+    "title": "Digger: petróleo, velhice e encenação",
+    "slug": "digger-petroleo-velhice-e-encenacao",
+    "date": "2026-10-03",
+    "excerpt": "Em Digger, Alejandro G. Iñárritu põe Tom Cruise na pele de um magnata do petróleo para satirizar a crise climática e a gerontocracia, mas a forma escolhida para a crítica acaba diluindo o que está em jogo.",
+    "coverImage": "../assets/images/optimized/digger-thumb.jpg",
+    "coverAlt": "Tom Cruise, de chapéu de caubói, terno azul-claro e gravata bolo, apoia-se numa pá com uma bota de couro de cobra sobre um globo terrestre, diante de um mural pintado com icebergs e ondas.",
+    "coverPosition": "center top",
+    "videoUrl": "",
+    "tags": [
+      "cinema",
+      "crítica",
+      "ensaio"
+    ],
+    "draft": false
+  },
+  {
     "title": "O que separa um videoclipe de um filme?",
     "slug": "o-que-separa-um-videoclipe-de-um-filme",
     "date": "2026-09-10",
