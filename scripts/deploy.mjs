@@ -30,10 +30,18 @@ function listed(lines) {
   return shown.join("\n");
 }
 
-// Arquivos modificados, apagados ou novos (não ignorados) na pasta de trabalho.
+const lines = (text) => text.split(/\r?\n/).filter(Boolean);
+
+// Arquivos cujo conteúdo difere do último commit (modificados, apagados, adicionados) e arquivos novos
+// não ignorados. Compara conteúdo com `git diff`, e não com `git status`: no Windows (core.autocrlf=true)
+// o checkout grava CRLF e o build regrava em LF; o conteúdo é o mesmo, mas o tamanho muda, e o
+// `git status` passa a acusar "modificado" sem olhar o conteúdo.
 export function pendingChanges(cwd) {
-  const out = git(cwd, ["status", "--porcelain", "--untracked-files=all"]).replace(/\s+$/, "");
-  return out ? out.split("\n") : [];
+  const tracked = lines(git(cwd, ["diff", "--name-status", "--no-renames", "HEAD"]))
+    .map((line) => line.replace("\t", " "));
+  const untracked = lines(git(cwd, ["ls-files", "--others", "--exclude-standard"]))
+    .map((file) => `?? ${file}`);
+  return [...tracked, ...untracked];
 }
 
 // Lista o que impede o deploy; vazia = a pasta é exatamente o remote/branch.

@@ -66,12 +66,29 @@ test("mudanças fora de commit, inclusive arquivos novos, bloqueiam e são lista
   fs.writeFileSync(path.join(local, "index.html"), "v2\n");
   fs.writeFileSync(path.join(local, "rascunho.txt"), "x\n");
   const changes = pendingChanges(local);
-  assert.ok(changes.includes(" M index.html"), "mantém o espaço inicial do status");
+  assert.ok(changes.includes("M index.html"));
   assert.ok(changes.includes("?? rascunho.txt"));
   const problems = checkRepo(local);
   assert.equal(problems.length, 1);
   assert.match(problems[0], /index\.html/);
   assert.match(problems[0], /rascunho\.txt/);
+});
+
+test("Windows (core.autocrlf): arquivo regravado em LF com o mesmo conteúdo não conta como mudança", (t) => {
+  const { local, commit } = repos(t);
+  commit(local, "ensaio.html", "<p>a</p>\n<p>b</p>\n");
+  git(local, "push", "--quiet", "origin", "master");
+  // Sem o -c core.autocrlf=false do helper: aqui a pasta se comporta como a do Windows.
+  const plain = (...args) => execFileSync("git", args, { cwd: local, stdio: ["ignore", "pipe", "pipe"] });
+  plain("config", "core.autocrlf", "true");
+  fs.rmSync(path.join(local, "ensaio.html"));
+  plain("checkout", "--", "ensaio.html");
+  assert.match(fs.readFileSync(path.join(local, "ensaio.html"), "utf8"), /\r\n/, "o checkout grava CRLF");
+  fs.writeFileSync(path.join(local, "ensaio.html"), "<p>a</p>\n<p>b</p>\n"); // o build regrava em LF
+  assert.deepEqual(pendingChanges(local), []);
+  assert.deepEqual(checkRepo(local), []);
+  fs.writeFileSync(path.join(local, "ensaio.html"), "<p>a</p>\n<p>c</p>\n"); // mudança de verdade
+  assert.deepEqual(pendingChanges(local), ["M ensaio.html"]);
 });
 
 test("outro branch: bloqueia e pede para voltar ao master", (t) => {
