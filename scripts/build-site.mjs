@@ -599,6 +599,9 @@ function rssDate(date) {
 }
 
 function renderFeed(posts, markdown) {
+  // lastBuildDate segue o ensaio mais recente, não o relógio: o mesmo conteúdo gera o mesmo feed,
+  // e o deploy pode exigir que o build não deixe nada para commitar.
+  const latest = posts[0]?.date;
   const items = posts.map((post) => {
     const url = `${SITE_URL}/ensaios/${post.slug}`;
     const md = markdown.get(post.slug);
@@ -620,8 +623,7 @@ function renderFeed(posts, markdown) {
     <link>${SITE_URL}/ensaios/</link>
     <atom:link href="${SITE_URL}/ensaios/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Ensaios sobre cinema, direção visual, 3D e processo criativo por J. V. Dias.</description>
-    <language>pt-BR</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <language>pt-BR</language>${latest ? `\n    <lastBuildDate>${rssDate(latest)}</lastBuildDate>` : ""}
 ${items}
   </channel>
 </rss>

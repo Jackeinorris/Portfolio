@@ -42,7 +42,8 @@ Header e footer são repetidos nas páginas escritas à mão e também existem c
 npm run build
 npm run serve
 npm run optimize-image -- <entrada> <nome-de-saida> [largura-maxima]
-npm exec -- wrangler deploy
+npm test
+npm run deploy
 ```
 
 - `npm run build` é obrigatório após qualquer mudança em `ensaios/posts/`; também atualiza canonicals das páginas estáticas.
@@ -50,13 +51,14 @@ npm exec -- wrangler deploy
 - Imagens de produção devem ir para `assets/images/optimized/`, normalmente pelo comando `optimize-image`.
 - O currículo pode ser gerado com `python scripts/build-cv.py`. Ele requer Python com `reportlab` e fontes padrão do Windows; o PDF fica fora do versionamento em `output/`. Neste computador, o comando `python` não está no `PATH`; use um Python instalado/configurado ou o runtime fornecido pelo ambiente Codex.
 
-Não há lint, testes automatizados ou CI. Para mudanças de site, rode `npm run build`, `git diff --check` e faça uma prévia local antes do deploy.
+Não há lint nem CI. `npm test` roda os testes do build, do Worker de vídeos e da trava de deploy. Para mudanças de site, rode `npm run build`, `git diff --check` e faça uma prévia local; depois commit, `git push` e `npm run deploy`.
 
 ## Publicação e segurança
 
 - Configuração: `wrangler.jsonc` publica o diretório raiz como assets estáticos no Worker `portfolio`.
 - Domínios: `jvdiasfilms.com.br` e `www.jvdiasfilms.com.br`.
-- Use o Wrangler instalado no projeto (`npm exec -- wrangler deploy`), não é necessário commit para o deploy refletir o working tree.
+- Publique só com `npm run deploy` (`scripts/deploy.mjs`). Ele recusa o deploy se a pasta não for exatamente o `origin/master`: fora do `master`, com mudanças fora de commit, com commits por puxar ou por enviar. Depois roda o build (que não pode deixar nada para commitar), `npm test` e o `wrangler deploy`. `npm run deploy -- --check` faz as verificações sem publicar.
+- Nunca rode `wrangler deploy` direto: ele publica a pasta como está, não o commit. Em outubro de 2026 um deploy feito de uma pasta atrasada em relação ao GitHub desfez no ar quatro commits do mapa, inclusive o Worker dos vídeos pelo R2.
 - `.assetsignore` define o que não pode chegar à produção. Mantenha alinhado com `.gitignore` para novos arquivos locais. `docs/`, `scripts/`, `tmp/`, `output/`, fontes pesadas e estado do Wrangler devem continuar excluídos.
 - `_headers` contém CSP e cache. Se uma página carregar novo iframe ou outro recurso externo, atualize a CSP antes de publicar.
 - CSS e JS têm cache de um dia. A página `projects/aprendi-vivendo.html` usa uma query de versão para evitar que visitantes recebam um CSS antigo depois de uma mudança de componente.

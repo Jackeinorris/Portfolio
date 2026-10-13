@@ -1,9 +1,10 @@
 {
   "scripts": {
     "build": "node scripts/build-site.mjs",
-    "test": "node --test scripts/build-site.test.mjs scripts/video-worker.test.mjs",
+    "test": "node --test scripts/build-site.test.mjs scripts/video-worker.test.mjs scripts/deploy.test.mjs",
     "serve": "node scripts/serve.mjs",
-    "optimize-image": "node scripts/optimize-image.mjs"
+    "optimize-image": "node scripts/optimize-image.mjs",
+    "deploy": "node scripts/deploy.mjs"
   },
   "devDependencies": {
     "sharp": "^0.34.5",

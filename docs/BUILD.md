@@ -3,6 +3,7 @@
 Execute `npm run build` depois de editar os metadados ou o Markdown dos ensaios.
 Execute `npm test` para verificar o gerador com casos isolados em pastas temporárias.
 Os testes não alteram as páginas do portfólio e não exigem novas dependências.
+O `lastBuildDate` do feed é a data do ensaio mais recente, não o horário do build: rodar o build sem mudar conteúdo não altera nenhum arquivo. O `npm run deploy` depende disso para recusar publicação de um build que não foi commitado.
 
 ## Publicação e remoção de ensaios
 

@@ -82,6 +82,18 @@ test("updates stale canonical, removes duplicates, inserts missing tags, and is 
   assert.equal(f.read("index.html"), html);
 });
 
+test("feed is deterministic: lastBuildDate follows the newest essay, not the clock", (t) => {
+  const f = fixture(t);
+  f.build();
+  const feed = f.read("ensaios/feed.xml");
+  assert.ok(feed.includes("<lastBuildDate>Mon, 07 Sep 2026 12:00:00 GMT</lastBuildDate>"));
+  f.build();
+  assert.equal(f.read("ensaios/feed.xml"), feed);
+  f.save([]);
+  f.build();
+  assert.doesNotMatch(f.read("ensaios/feed.xml"), /lastBuildDate/);
+});
+
 test("removes deleted and renamed essays while retaining unrelated HTML and legacy redirect", (t) => {
   const f = fixture(t);
   f.build();
